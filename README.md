@@ -12,7 +12,7 @@ As usual, a virtual env is recommended but not required.
     $ git clone https://github.com/cproctor/quest.git
     $ cd quest
     $ pip install -r requirements.txt
-    $ pip install -e quest
+    $ pip install -e .
     $ cd quest/examples
     $ python maze_demo.py
     
