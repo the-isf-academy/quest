@@ -14,7 +14,7 @@ class Map:
 
     Attributes:
         background_color: a 3-tuple of integers for red, green, blue. Each from 0-255.
-            The `arcade.color` module also predefines many colors.
+            The :py:module:`arcade:color` module also predefines many colors.
         tile_scaling: Factor by which to scale all map tiles. Default is 1.
     """
     background_color = (RED, GREEN, BLUE)
@@ -115,6 +115,12 @@ class MapLayer:
 
     def draw(self):
         self.sprite_list.draw()
+
+    def clear(self):
+        """Delete all this layer's sprites.
+        """
+        while len(self.sprite_list) > 0:
+            self.sprite_list.pop()
 
 class GridMapLayer(MapLayer):
     """

@@ -7,10 +7,12 @@ from quest.errors import NoMapError, NoLayerError
 class QuestGame(arcade.Window):
     """Implements a top-down video game with a character on a map.
 
-    QuestGame is the central class in the Quest game framework, which is built
-    on top of the `arcade`. QuestGame is a subclass of arcade.Window.
-    The intended usage of QuestGame is to create a subclass for your game and 
-    then override whatever you need to change from the default behavior. 
+    :py:class:`QuestGame` is the central class in the :doc:`../index`, 
+    which is built on top of :doc:`arcade:index`. :py:class:`QuestGame` 
+    is a subclass of :py:class:`arcade:arcade.Window`.
+    The intended usage of :py:class:`QuestGame` is to create a subclass 
+    for your game and then override whatever you need to change from 
+    the default behavior. 
 
     Attributes:
         screen_width: Width in pixels of the game window.
@@ -88,8 +90,8 @@ class QuestGame(arcade.Window):
 
         self.maps should be a list of quest.map.Map objects, which get 
         initialized here. Each map represents a 'level' or 'scene' of the game.
-        Once the list of maps is created, use self.set_current_map() to 
-        set one of the maps as the initial 'current' map.
+        Once the list of maps is created, use :py:meth:`set_current_map` to 
+        set one of the maps as the initial current map.
         This method will probably need to be overridden. 
         """
         self.maps = []
@@ -107,7 +109,7 @@ class QuestGame(arcade.Window):
     def get_current_map(self):
         """Gets the current game map.
 
-        The current map is tracked using `current_map_index`
+        The current map is tracked using ``current_map_index``.
 
         Returns:
             The current Map.
@@ -119,8 +121,8 @@ class QuestGame(arcade.Window):
     def set_current_map(self, index):
         """Sets the current game map.
 
-        Checks to make sure `index` is valid, and then stores it as
-        `current_map_index`.
+        Checks to make sure ``index`` is valid, and then stores it as
+        ``current_map_index``.
         """
         if index < 0 or index >= len(self.maps):
             raise ValueError("Cannot set current map to {}; there are {} maps.".format(
@@ -129,8 +131,6 @@ class QuestGame(arcade.Window):
 
     def setup_non_playable_characters(self):
         """Does any neccessary setup for NPCs.
-        
-        If your game has non-playable characters, this method should set them up.
         """
         self.non_playable_character_list = arcade.SpriteList()
 
@@ -138,15 +138,18 @@ class QuestGame(arcade.Window):
         """Sets up the physics engine.
 
         Initializes the physics engine that will be used in the game. 
-        A physics engine resolves interactions between sprites according to a set of rules.
-        The Arcade library's PhysicsEngineSimple just keeps the player sprite from bumping 
-        into walls. More complicated physics engines could implement collisions, gravity, 
-        or even realistic 3-dimensional interactions. 
+        A physics engine resolves interactions between sprites according to a 
+        set of rules. The :doc:`arcade:index` :py:class:`arcade:PhysicsEngineSimple` 
+        just keeps the player sprite from bumping into walls. More complicated 
+        physics engines could implement collisions, gravity, or even realistic 
+        3-dimensional interactions. 
 
-        By default, QuestGame uses `arcade.PhysicsEngineSimple` to prevent the player sprite
-        from colliding or passing through any sprites on a map layer with the `wall` role.
-        Note: There should only be one `wall` map layer.
-        Don't override this method unless you understand Arcade's physics engines pretty well.
+        By default, :py:class:`QuestGame` uses :py:class:`arcade:PhysicsEngineSimple` 
+        to prevent the player sprite from colliding or passing through any 
+        sprites on a map layer with the ``wall`` role. If there are no 
+        :py:class:`MapLayer` with the ``wall`` role, uses the 
+        :py:class:`NullPhysicsEngine` instead. Don't override this method 
+        unless you understand Arcade's physics engines pretty well.
         """
         try:
             walls = self.get_current_map().get_single_layer_for_role("wall").sprite_list
@@ -201,11 +204,10 @@ class QuestGame(arcade.Window):
         pass
 
     def on_loot_collected(self, loot):
-        """Called when ever the player encounters a piece of loot.
+        """Called whenever the player encounters a piece of loot.
 
         Args:
             loot: A loot sprite which the player collided with.
-        
         """
         loot.kill()
 

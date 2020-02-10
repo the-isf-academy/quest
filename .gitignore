@@ -1,5 +1,5 @@
 __pycache__/*
-quest/__pycache__/*
+**/__pycache__/*
 *.swp
 *.swo
 documentation/_build/*

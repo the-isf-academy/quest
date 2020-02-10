@@ -6,13 +6,11 @@ import arcade
 import random
 from datetime import datetime
 
-# TODO: Add a time, change to score reporting after completion
-
 class MazeMap(Map):
-    """A Map which creates a wall layer using a Maze.
+    """A Map which creates a wall layer using a :py:class`Maze`.
 
-    MazeMap is a subclass of Map which automatically generates a 
-    maze. It uses a `quest.maze.Maze` to figure out where to put walls, 
+    :py:class:`MazeMap` is a subclass of :py:class`Map` which automatically generates a 
+    maze. It uses a `Maze` to figure out where to put walls, 
     and adds wall sprites to a map layer in a corresponding pattern.
 
     Args:
@@ -36,15 +34,28 @@ class MazeMap(Map):
         self.generate_maze()
 
     def generate_maze(self, seed=None):
+        """Generates (or re-generates) the map. The :py:class`Maze` does most of the work.
+
+        Regenerates the maze, clears the wall map layer and the loot map layer (in case
+        there was a previous maze), and then populates these layers with new wall sprites
+        and loot sprites.
+        
+        Args:
+            seed: Random seed to pass to the maze (see :py:meth:`Maze.generate`)
+        """
         self.maze.generate(seed)
         wall_map_layer = self.get_single_layer_for_role("wall")
+        wall_map_layer.clear()
         for x, y in self.maze.get_walls():
             wall_map_layer.add_sprite(x, y)
         loot_map_layer = self.get_single_layer_for_role("loot")
+        loot_map_layer.clear()
         for x, y in random.sample(self.possible_loot_locations(), self.num_loot):
             loot_map_layer.add_sprite(x, y)
 
     def get_wall_map_layer(self):
+        """Creates a new :py:class:`GridMapLayer` to hold walls.
+        """
         return GridMapLayer(
             name="maze",
             columns=self.columns,
@@ -55,6 +66,8 @@ class MazeMap(Map):
         )
 
     def get_loot_map_layer(self):
+        """Creates a new :py:class:`GridMapLayer` to hold loot.
+        """
         return GridMapLayer(
             name="loot",
             columns=self.columns,
@@ -66,21 +79,20 @@ class MazeMap(Map):
         )
 
     def possible_loot_locations(self):
+        """Returns a list of points where loot could be placed. 
+        """
         X = range(1, self.columns, 2)
         Y = range(1, self.rows, 2)
         return list(product(X, Y))
 
-
 class MazeGame(QuestGame):
-    """A sample game in which a player explores a maze and looks for loot.
+    """Get all the stars as fast as you can! My record is 45 seconds.
 
-    MazeGame is an example of how you can make a fairly complex game without 
-    making too many changes to QuestGame. The main changes we need to make are 
-    how the 
-
-    Because MazeGame is a subclass of QuestGame, we just need to change the 
-    parts we want to work differently.
-        
+    :py:class:`MazeGame` is an example of how you can make a fairly complex 
+    game without making too many changes. Because :py:class:`MazeGame` is a 
+    subclass of :py:class:`QuestGame`, we just need to change the parts we 
+    want to work differently. We need to set some of the :py:class:`MazeGame` 
+    properties and override a few of the class methods. 
 
     Attributes:
         tile_size=32: Each square tile in the map is 32 pixels across.
@@ -114,7 +126,7 @@ class MazeGame(QuestGame):
         self.level_start = datetime.now()
 
     def setup_maps(self):
-        """Sets up the MazeMap and adds it to game's list of maps.
+        """Sets up the :py:class:`MazeMap` and adds it to game's list of maps.
         """
         super().setup_maps()
         maze_map = MazeMap(self.grid_columns, self.grid_rows, self.tile_size, self.max_score)
@@ -133,13 +145,13 @@ class MazeGame(QuestGame):
             self.final_elapsed_time = (datetime.now() - self.level_start).seconds
 
     def message(self):
-        """Returns a string showing the score and total loot, like "Score: 12/25."
+        """Returns a string like "Time 12 (12/25)"
         """
         if self.game_over:
             return "You won in {} seconds!".format(self.final_elapsed_time)
         else:
             elapsed_time = datetime.now() - self.level_start
-            return "Time: {}. Score: {}/{}".format(elapsed_time.seconds, self.score, self.max_score)
+            return "Time {} ({}/{})".format(elapsed_time.seconds, self.score, self.max_score)
 
 if __name__ == '__main__':
     game = MazeGame()

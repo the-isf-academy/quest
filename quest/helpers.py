@@ -7,7 +7,17 @@ def tileset_to_collection(image_path, tile_size, output_dir, name="tileset", cre
     """Splits a tileset image into separate files.
 
     Quest relies on Arcade, which only works with collections of images. 
-    A lot of game art
+    A lot of game art is provided as a single tile image. This function can help split
+    it out.
+
+    Args:
+        image_path: Path to an image containing a grid of tiles.
+        tile_size: Size in pixels of each tile.
+        output_dir: Directory for output files (there may be a lot of them).
+        name: Name of the tileset.
+        create_tsx: If True, also creates a tsx file which can be opened as a
+            :doc:`Tileset <tiled:manual/editing-tilesets>` using 
+            :doc:`Tiled <tiled:manual/introduction>`.
 
     """
     img = Image.open(image_path)
@@ -30,17 +40,6 @@ def tileset_to_collection(image_path, tile_size, output_dir, name="tileset", cre
             ET.ElementTree(tileset).write(f, encoding="UTF-8", xml_declaration=True)
 
 def empty_tileset(tile_size, cols, rows, name):
-    """Creates an empty tileset.
-
-    Args:
-        tile_size: Size of each tile, in pixels.
-        cols: Number of columns.
-        rows: Number of rows.
-        name: Tileset name.
-
-    Returns:
-        An xml document set up as a tileset.
-    """
     tileset = ET.Element("tileset")
     tileset.set('version', "1.2")
     tileset.set('tiledversion',"1.3.1")
@@ -56,19 +55,9 @@ def empty_tileset(tile_size, cols, rows, name):
     return tileset
 
 def add_tile(tileset, tile_id, img_path):
-    """Adds a tile to the tileset.
-
-    Args:
-        tileset: An xml document, like the return value of `empty_tileset`.
-        tile_id: A unique number.
-        img_path: Path to the image, relative to where this tileset will be saved.
-    """
     tile_element = ET.SubElement(tileset, 'tile')
     tile_element.set('id', str(tile_id) )
     img_element = ET.SubElement(tile_element, 'image')
     img_element.set('width', tileset.get('tilewidth'))
     img_element.set('height', tileset.get('tileheight'))
     img_element.set('source', img_path)
-
-if __name__ == '__main__':
-    tileset_to_collection("examples/images/wood_tileset.png", 32, "examples/images/wood_tileset")

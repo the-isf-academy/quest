@@ -47,7 +47,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 intersphinx_mapping = {
-    'arcade': ('https://arcade.academy/', None)
+    'arcade': ('https://arcade.academy/', None),
+    'tiled': ('https://doc.mapeditor.org/en/stable/', None),
 }
 
 

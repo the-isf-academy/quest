@@ -3,6 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+
 Quest Game Framework
 ====================
 
@@ -10,8 +11,9 @@ Quest Game Framework
    :maxdepth: 2
    :caption: Contents:
 
+   tutorial/index
    narrative/index
    examples/index
-   api/modules
+   api/index
    pedagogy/index
 
