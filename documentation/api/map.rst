@@ -1,4 +1,4 @@
-map
+Map
 ===
 
 .. automodule:: quest.map

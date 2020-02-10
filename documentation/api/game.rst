@@ -1,5 +1,5 @@
-game module
-===========
+Game
+====
 
 .. automodule:: quest.game
    :members:

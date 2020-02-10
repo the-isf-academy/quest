@@ -1,4 +1,4 @@
-sprites
+Sprites
 =======
 
 .. automodule:: quest.sprites
