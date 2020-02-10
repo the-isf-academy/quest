@@ -1,0 +1,576 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>game module &mdash; Quest Game Framework 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="map" href="map.html" />
+    <link rel="prev" title="Errors" href="errors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Quest Game Framework
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Quest Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="engines.html">Engines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">game module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maze.html">Maze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sprites.html">sprites</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Quest Game Framework</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Quest Modules</a> &raquo;</li>
+        
+      <li>game module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/game.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-quest.game">
+<span id="game-module"></span><h1>game module<a class="headerlink" href="#module-quest.game" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="quest.game.QuestGame">
+<em class="property">class </em><code class="sig-prename descclassname">quest.game.</code><code class="sig-name descname">QuestGame</code><a class="headerlink" href="#quest.game.QuestGame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements a top-down video game with a character on a map.</p>
+<p>QuestGame is the central class in the Quest game framework, which is built
+on top of the <cite>arcade</cite>. QuestGame is a subclass of arcade.Window.
+The intended usage of QuestGame is to create a subclass for your game and
+then override whatever you need to change from the default behavior.</p>
+<dl class="attribute">
+<dt id="quest.game.QuestGame.screen_width">
+<code class="sig-name descname">screen_width</code><a class="headerlink" href="#quest.game.QuestGame.screen_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width in pixels of the game window.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.screen_height">
+<code class="sig-name descname">screen_height</code><a class="headerlink" href="#quest.game.QuestGame.screen_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Height in pixels of the game window.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.left_viewport_margin">
+<code class="sig-name descname">left_viewport_margin</code><a class="headerlink" href="#quest.game.QuestGame.left_viewport_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance (in pixels) between the
+player sprite and the left edge of the viewport.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.right_viewport_margin">
+<code class="sig-name descname">right_viewport_margin</code><a class="headerlink" href="#quest.game.QuestGame.right_viewport_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance (in pixels) between the
+player sprite and the right edge of the viewport.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.bottom_viewport_margin">
+<code class="sig-name descname">bottom_viewport_margin</code><a class="headerlink" href="#quest.game.QuestGame.bottom_viewport_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance (in pixels) between the
+player sprite and the bottom edge of the viewport.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.top_viewport_margin">
+<code class="sig-name descname">top_viewport_margin</code><a class="headerlink" href="#quest.game.QuestGame.top_viewport_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum distance (in pixels) between the
+player sprite and the top edge of the viewport.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.screen_title">
+<code class="sig-name descname">screen_title</code><a class="headerlink" href="#quest.game.QuestGame.screen_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Title of the game window (displayed top center)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.player_scaling">
+<code class="sig-name descname">player_scaling</code><a class="headerlink" href="#quest.game.QuestGame.player_scaling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factor by which to scale the player sprite.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.player_sprite_image">
+<code class="sig-name descname">player_sprite_image</code><a class="headerlink" href="#quest.game.QuestGame.player_sprite_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filepath for the player sprite.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.player_movement_speed">
+<code class="sig-name descname">player_movement_speed</code><a class="headerlink" href="#quest.game.QuestGame.player_movement_speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>In pixels per update. (By default, the game runs
+at 60 hertz, so update is called every 1/60 second.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.player_initial_x">
+<code class="sig-name descname">player_initial_x</code><a class="headerlink" href="#quest.game.QuestGame.player_initial_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial x-coordinate for player center.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.player_initial_y">
+<code class="sig-name descname">player_initial_y</code><a class="headerlink" href="#quest.game.QuestGame.player_initial_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial y-coordinate for player center.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.view_bottom">
+<code class="sig-name descname">view_bottom</code><a class="headerlink" href="#quest.game.QuestGame.view_bottom" title="Permalink to this definition">¶</a></dt>
+<dd><p>y-coordinate of the bottom edge of the current viewport</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="quest.game.QuestGame.view_left">
+<code class="sig-name descname">view_left</code><a class="headerlink" href="#quest.game.QuestGame.view_left" title="Permalink to this definition">¶</a></dt>
+<dd><p>x-coordinate of the left edge of the current viewport</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.add_map">
+<code class="sig-name descname">add_map</code><span class="sig-paren">(</span><em class="sig-param">game_map</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.add_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a map to the list of maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>game_map</strong> – A quest.map.Map object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">bottom_viewport_margin</code><em class="property"> = 100</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.center_view_on_player">
+<code class="sig-name descname">center_view_on_player</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.center_view_on_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Centers the viewport on the player.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.get_current_map">
+<code class="sig-name descname">get_current_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.get_current_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current game map.</p>
+<p>The current map is tracked using <cite>current_map_index</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The current Map.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">left_viewport_margin</code><em class="property"> = 100</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.message">
+<code class="sig-name descname">message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a message (or no message) to be shown on screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A string to be shown on screen, or None if no message is needed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_draw">
+<code class="sig-name descname">on_draw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the screen.</p>
+<p>At every tick, just after <cite>on_update</cite>, the whole screen needs to be
+redrawn. This involves drawing the background color, each map layer
+with the <cite>display</cite> role, the NPC’s, the player, and any message that
+needs to be displayed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_key_press">
+<code class="sig-name descname">on_key_press</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">modifiers</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_key_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles key presses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – The key that was pressed.</p></li>
+<li><p><strong>modifiers</strong> – A list of currently-active modifier keys (e.g. shift).</p></li>
+</ul>
+</dd>
+</dl>
+<p>While a key is pressed, the sprite’s x- and y- change values are set
+to the player’s movement speed. Think of this as an intention to move;
+it’s up to the physics engine to decide whether this actually
+results in movement. For example, the physics engine will prevent
+players from moving into walls. This method is automatically called at
+the appropriate time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_key_release">
+<code class="sig-name descname">on_key_release</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">modifiers</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_key_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles key releases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – The key that was released.</p></li>
+<li><p><strong>modifiers</strong> – A list of currently-active modifier keys (e.g. shift).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Whenever a key is released, the player’s change_x or change_y
+is set to 0, indicating that the player no longer intends to keep
+moving. This method is automatically called at the appropriate time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_loot_collected">
+<code class="sig-name descname">on_loot_collected</code><span class="sig-paren">(</span><em class="sig-param">loot</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_loot_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when ever the player encounters a piece of loot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wall</strong> – A loot sprite which the player collided with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_update">
+<code class="sig-name descname">on_update</code><span class="sig-paren">(</span><em class="sig-param">delta_time</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the game’s state.</p>
+<p>After every tick, the game needs to be updated. The physics engine
+updates sprite positions, and then sprite callbacks are executed.
+Finally, the viewport is scrolled. Note that <cite>on_update</cite> changes the
+state of the game, but does not draw anything to the screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>delta_time</strong> – How much time has passed since the last update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.on_wall_collision">
+<code class="sig-name descname">on_wall_collision</code><span class="sig-paren">(</span><em class="sig-param">wall</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.on_wall_collision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called whenever the player bumps into a wall.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wall</strong> – A wall sprite which the player collided with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">player_initial_x</code><em class="property"> = 0</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">player_initial_y</code><em class="property"> = 0</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">player_movement_speed</code><em class="property"> = 10</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">player_scaling</code><em class="property"> = 1</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">player_sprite_image</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">right_viewport_margin</code><em class="property"> = 100</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">screen_height</code><em class="property"> = 600</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">screen_title</code><em class="property"> = 'Quest'</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">screen_width</code><em class="property"> = 600</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.scroll_viewport">
+<code class="sig-name descname">scroll_viewport</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.scroll_viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the viewport to keep the player within margins.</p>
+<p>If the player sprite is too close to any edge of the viewport
+(or has somehow gone beyond the viewport), scrolls the viewport
+to the player. The {left, right, bottom, top}_viewport_margin
+properties specify how close the player is allowed to be to the
+edge before scrolling.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.set_current_map">
+<code class="sig-name descname">set_current_map</code><span class="sig-paren">(</span><em class="sig-param">index</em><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.set_current_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the current game map.</p>
+<p>Checks to make sure <cite>index</cite> is valid, and then stores it as
+<cite>current_map_index</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.setup_maps">
+<code class="sig-name descname">setup_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.setup_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up the game maps.</p>
+<p>self.maps should be a list of quest.map.Map objects, which get
+initialized here. Each map represents a ‘level’ or ‘scene’ of the game.
+Once the list of maps is created, use self.set_current_map() to
+set one of the maps as the initial ‘current’ map.
+This method will probably need to be overridden.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.setup_non_playable_characters">
+<code class="sig-name descname">setup_non_playable_characters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.setup_non_playable_characters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does any neccessary setup for NPCs.</p>
+<p>If your game has non-playable characters, this method should set them up.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.setup_physics_engine">
+<code class="sig-name descname">setup_physics_engine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.setup_physics_engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up the physics engine.</p>
+<p>Initializes the physics engine that will be used in the game.
+A physics engine resolves interactions between sprites according to a set of rules.
+The Arcade library’s PhysicsEngineSimple just keeps the player sprite from bumping
+into walls. More complicated physics engines could implement collisions, gravity,
+or even realistic 3-dimensional interactions.</p>
+<p>By default, QuestGame uses <cite>arcade.PhysicsEngineSimple</cite> to prevent the player sprite
+from colliding or passing through any sprites on a map layer with the <cite>wall</cite> role.
+Note: There should only be one <cite>wall</cite> map layer.
+Don’t override this method unless you understand Arcade’s physics engines pretty well.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.setup_player">
+<code class="sig-name descname">setup_player</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.setup_player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the player sprite.</p>
+<p>Initializes a sprite for the player, assigns its starting position,
+and appends the player sprite to a SpriteList (Arcade likes to work
+with sprites in SpriteLists).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">top_viewport_margin</code><em class="property"> = 100</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="quest.game.QuestGame.update_viewport">
+<code class="sig-name descname">update_viewport</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#quest.game.QuestGame.update_viewport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the viewport.</p>
+<p>Uses the <cite>view_left</cite>, <cite>view_bottom</cite>, and the screen size
+properties to update the viewport. Needs to be called after
+changing any of these properties.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">view_bottom</code><em class="property"> = 0</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">view_left</code><em class="property"> = 0</em></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="map.html" class="btn btn-neutral float-right" title="map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="errors.html" class="btn btn-neutral float-left" title="Errors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Chris Proctor
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
