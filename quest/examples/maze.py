@@ -5,14 +5,19 @@ from itertools import product
 import arcade
 import random
 from datetime import datetime
+import os
+from pathlib import Path
+
+def resolve_path(relative_path):
+    here = Path(os.path.abspath(__file__)).parent
+    return str(here / relative_path)
 
 class MazeMap(Map):
     """A Map which creates a wall layer using a :py:class`Maze`.
 
-    :py:class:`MazeMap` is a subclass of :py:class`Map` which automatically generates a 
+    :py:class:`MazeMap` is a subclass of :py:class:`Map` which automatically generates a 
     maze. It uses a `Maze` to figure out where to put walls, 
     and adds wall sprites to a map layer in a corresponding pattern.
-
     Args:
         columns: The number of columns of tiles in the map
         rows: The number of rows of tiles in the map
@@ -62,6 +67,7 @@ class MazeMap(Map):
             rows=self.rows,
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
+            sprite_filename=resolve_path("images/box.png"),
             roles=["wall", "display"]
         )
 
@@ -74,7 +80,7 @@ class MazeMap(Map):
             rows=self.rows,
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
-            sprite_filename="images/star.png",
+            sprite_filename=resolve_path("images/star.png"),
             roles=["loot", "display"]
         )
 
@@ -94,6 +100,14 @@ class MazeGame(QuestGame):
     want to work differently. We need to set some of the :py:class:`MazeGame` 
     properties and override a few of the class methods. 
 
+    To run this example::
+
+        $ python -m quest.examples.maze
+
+    After you play it, check out the sorce code by clicking on "source" in the
+    blue bar just above.
+
+
     Attributes:
         tile_size=32: Each square tile in the map is 32 pixels across.
         grid_columns=33: The map will have 33 columns of tiles.
@@ -112,7 +126,7 @@ class MazeGame(QuestGame):
     tile_size = 32
     grid_columns = 33
     grid_rows = 33
-    player_sprite_image = "images/boy_simple.png"
+    player_sprite_image = resolve_path("images/boy_simple.png")
     player_scaling = 0.5
     player_movement_speed = 5
     player_initial_x = 1.5 * tile_size

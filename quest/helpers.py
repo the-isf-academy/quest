@@ -1,7 +1,67 @@
 from PIL import Image
 import xml.etree.ElementTree as ET
-from itertools import product
+from itertools import product, chain
 from pathlib import Path
+from enum import Flag, auto
+
+class Direction(Flag):
+    NONE = 0
+    RIGHT = auto()
+    UP = auto()
+    DOWN = auto()
+    LEFT = auto()
+    UPRIGHT = UP | RIGHT
+    UPLEFT = UP | LEFT
+    DOWNLEFT = DOWN | LEFT
+    DOWNRIGHT = DOWN | RIGHT
+
+    E = RIGHT
+    N = UP
+    S = DOWN
+    W = LEFT
+    NE = N | E
+    NW = N | W
+    SW = S | W
+    SE = S | E
+
+    PRIMARY_AXIS = LEFT | RIGHT
+
+    @classmethod
+    def from_vector(cls, vector, diagonal=True):
+        """Assuming origin at bottom left
+        """
+        vx, vy = vector
+        result = cls.NONE
+        if vx < 0: 
+            result |= cls.LEFT
+        if vx > 0: 
+            result |= cls.RIGHT
+        if vy < 0:
+            result |= cls.DOWN
+        if vy > 0:
+            result |= cls.UP
+        if result.is_diagonal() and not diagonal:
+            result &= cls.PRIMARY_AXIS
+        return result
+
+    def is_diagonal(self):
+        return self in [self.NE, self.NW, self.SW, self.SE]
+
+class SpriteListList:
+    """Allows multiple SpriteLists to be treated as if they were a single SpriteList.
+    """
+    def __init__(self, sprite_lists):
+        self.sprite_lists = sprite_lists
+
+    def chain_sprite_lists(self):
+        return chain.from_iterable(self.sprite_lists)
+
+    def __iter__(self):
+        return iter(self.chain_sprite_lists())
+
+    def update(self):
+        for sprite_list in self.chain_sprite_lists():
+            sprite_list.update()
 
 def tileset_to_collection(image_path, tile_size, output_dir, name="tileset", create_tsx=True):
     """Splits a tileset image into separate files.

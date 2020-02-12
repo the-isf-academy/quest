@@ -1,6 +1,6 @@
 from quest.game import QuestGame
-from quest.map import TiledMap
-import arcade
+from quest.map import Map, GridMapLayer, TiledMap
+from quest.engines import DiscretePhysicsEngine
 import os
 from pathlib import Path
 
@@ -8,30 +8,11 @@ def resolve_path(relative_path):
     here = Path(os.path.abspath(__file__)).parent
     return str(here / relative_path)
 
-class IslandAdventure(QuestGame):
-    """A very simple subclass of :py:class:`QuestGame`.
-
-    :py:class:`IslandAdventure` shows off the basic features of the Quest 
-    framework, loading a map and letting the player explore it. 
-    To run this example, make sure you have 
-    :doc:`installed Quest <tutorial/install>`. Then run::
-
-        $ python -m quest.examples.island
-
-    After you play it, check out the sorce code by clicking on "source" in the
-    blue bar just above.
-    """
-
+class TinyGridTest(QuestGame):
     player_sprite_image = resolve_path("images/boy_simple.png")
-    screen_width = 500
-    screen_height = 500
-    left_viewport_margin = 96                            
-    right_viewport_margin = 96
-    bottom_viewport_margin = 96
-    top_viewport_margin = 96
     player_initial_x = 300
     player_initial_y = 300
-    player_movement_speed = 6
+    player_speed = 10
 
     def setup_maps(self):
         """Sets up the map.
@@ -48,6 +29,15 @@ class IslandAdventure(QuestGame):
         }
         self.add_map(TiledMap(resolve_path("images/island/island.tmx"), layer_roles))
 
+        layer = GridMapLayer("grid", 40, 40, 40*32, 40*32)
+        self.get_current_map().add_layer(layer)
+
+    def setup_physics_engine(self):
+        grid = self.get_current_map().get_layer_by_name('grid')
+        self.physics_engine = DiscretePhysicsEngine(self.player_list, grid, 
+            walls=self.get_current_map().get_single_layer_for_role('wall').sprite_list)
+        
 if __name__ == '__main__':
-    game = IslandAdventure()
+    game = TinyGridTest()
     game.run()
+

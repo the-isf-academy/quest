@@ -1,9 +1,14 @@
 import arcade
 from quest.errors import NoLayerError, MultipleLayersError
+from math import floor
 
 RED = 0
 GREEN = 0
 BLUE = 0
+
+def clamp(bounds, val):
+    low, high = bounds
+    return max(low, min(high, val))
 
 class Map:
     """Implements a map for a level or stage in the game.
@@ -126,30 +131,39 @@ class GridMapLayer(MapLayer):
     """
     A MapLayer designed for use with GridMap. Makes it easy to add new sprites at particular grid locations.
     """
-    sprite_filename = "images/box.png"
-
     def __init__(self, name, columns, rows, pixel_width, pixel_height, sprite_filename=None, roles=None):
         super().__init__(name, roles=roles)
         self.columns = columns
         self.rows = rows
         self.pixel_width = pixel_width
         self.pixel_height = pixel_height
-        self.sprite_filename = sprite_filename or self.sprite_filename
+        self.sprite_filename = sprite_filename
 
-    def add_sprite(self, x, y, sprite=None):
+    def add_sprite(self, tile_x, tile_y, sprite=None):
         sprite = sprite or self.create_sprite()
-        sprite.left, sprite.bottom = self.get_pixel_position(x, y)
+        sprite.left, sprite.bottom = self.get_pixel_position((tile_x, tile_y))
         self.sprite_list.append(sprite)
 
     def create_sprite(self):
+        if self.sprite_filename is None:
+            raise ValueError("Can't add sprites to GridMapLayer unless sprite_filename is defined.")
         return arcade.Sprite(self.sprite_filename)
 
-    def get_pixel_position(self, x, y):
-        if x < 0 or x >= self.columns:
-            raise ValueError("Invalid x value of {} on layer with {} columns".format(x, self.columns))
-        if y < 0 or y >= self.rows:
-            raise ValueError("Invalid y value of {} on layer with {} rows".format(y, self.rows))
-        left = self.pixel_width * (x / self.columns)
-        bottom = self.pixel_height * (y / self.rows)
-        return (left, bottom)
+    def get_pixel_position(self, tile_position, center=True):
+        tile_x, tile_y = tile_position
+        pixel_x = self.pixel_width * (tile_x / self.columns)
+        pixel_y = self.pixel_height * (tile_y / self.rows)
+        if center:
+            pixel_x += (self.pixel_width / self.columns) / 2
+            pixel_y += (self.pixel_height / self.rows) / 2
+        return pixel_x, pixel_y
 
+    def get_tile_position(self, pixel_position):
+        pixel_x, pixel_y = pixel_position
+        tile_x = pixel_x // (self.pixel_width / self.columns)
+        tile_y = pixel_y // (self.pixel_height / self.rows)
+        return tile_x, tile_y
+
+    def tile_in_grid(self, tile_position):
+        tile_x, tile_y = tile_position
+        return tile_x >= 0 and tile_x < self.columns and tile_y >= 0 and tile_y < self.rows

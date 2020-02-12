@@ -28,7 +28,7 @@ class QuestGame(arcade.Window):
         screen_title: Title of the game window (displayed top center)
         player_scaling: Factor by which to scale the player sprite.
         player_sprite_image: Filepath for the player sprite.
-        player_movement_speed: In pixels per update. (By default, the game runs
+        player_speed: In pixels per update. (By default, the game runs
             at 60 hertz, so update is called every 1/60 second.)
         player_initial_x: Initial x-coordinate for player center.
         player_initial_y: Initial y-coordinate for player center.
@@ -44,7 +44,7 @@ class QuestGame(arcade.Window):
     screen_title = "Quest"
     player_scaling = 1
     player_sprite_image = None
-    player_movement_speed = 10
+    player_speed = 10
     player_initial_x = 0
     player_initial_y = 0
     view_bottom = 0
@@ -82,6 +82,7 @@ class QuestGame(arcade.Window):
         self.player_sprite = arcade.Sprite(self.player_sprite_image, self.player_scaling)
         self.player_sprite.center_x = self.player_initial_x
         self.player_sprite.center_y = self.player_initial_y
+        self.player_sprite.speed = self.player_speed
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
 
@@ -226,13 +227,13 @@ class QuestGame(arcade.Window):
         the appropriate time.
         """
         if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = self.player_movement_speed
+            self.player_sprite.change_y = self.player_sprite.speed
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = -self.player_movement_speed
+            self.player_sprite.change_y = -self.player_sprite.speed
         if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -self.player_movement_speed 
+            self.player_sprite.change_x = -self.player_sprite.speed
         elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = self.player_movement_speed 
+            self.player_sprite.change_x = self.player_sprite.speed
 
     def on_key_release(self, key, modifiers):
         """Handles key releases.
