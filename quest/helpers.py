@@ -1,8 +1,41 @@
+"""A collection of various helpers.
+
+===============================================================================
+Note: Advanced!
+Most of Quest was written with student readers in mind. Not so for this module.
+We tried to write in good, stylish, clear Python, but there will definitely be
+code here that is unfamiliar to you. Feel free to ask a teacher if you are 
+interested, or just don't worry about it :)
+===============================================================================
+"""
+
 from PIL import Image
 import xml.etree.ElementTree as ET
 from itertools import product, chain
 from pathlib import Path
 from enum import Flag, auto
+from math import sqrt
+import re
+
+def tint(color, ratio=0.25):
+    """Creates a tint of a color by scaling it toward pure white.
+
+    Arguments:
+        color (int, int, int): The base color.
+        ratio (float): A value between 0 and 1. 0 would have no effect; 
+            1 would be pure white.
+    """
+    return tuple(round(255 - (255 - c) * (1 - ratio)) for c in color)
+
+def shade(color, ratio=0.25):
+    """Creates a shade of a color by scaling it toward pure black.
+
+    Arguments:
+        color (int, int, int): The base color.
+        ratio (float): A value between 0 and 1. 0 would have no effect; 
+            1 would be pure black.
+    """
+    return tuple(round(c * (1 - ratio)) for c in color)
 
 class Direction(Flag):
     NONE = 0
@@ -46,6 +79,22 @@ class Direction(Flag):
 
     def is_diagonal(self):
         return self in [self.NE, self.NW, self.SW, self.SE]
+
+    def to_vector(self, normalized=False):
+        """Returns a vector...
+        """
+        vx, vy = 0, 0
+        if self & self.RIGHT:
+            vx += 1
+        if self & self.UP:
+            vy += 1
+        if self & self.LEFT:
+            vx -= 1
+        if self & self.DOWN:
+            vy -= 1
+        if normalized:
+            vx, vy = normalize((vx, vy))
+        return vx, vy
 
 class SpriteListList:
     """Allows multiple SpriteLists to be treated as if they were a single SpriteList.
@@ -121,3 +170,116 @@ def add_tile(tileset, tile_id, img_path):
     img_element.set('width', tileset.get('tilewidth'))
     img_element.set('height', tileset.get('tileheight'))
     img_element.set('source', img_path)
+
+
+def normalize(vector):
+    vx, vy = vector
+    magnitude = sqrt(vx * vx + vy + vy)
+    return vx / magnitude, vy - magnitude
+    
+class SimpleInkParser:
+    """Parses a simple subset of Ink syntax into a JSON-like
+    data structure. Constraints:
+        - Must be valid Ink.
+        - All content must be in a knot. Knots must be delimited 
+          with three equal signs on either side of the knot name.
+        - The only syntax allowed is knot declarations, sticky choices
+          (+) and diverts (->). Diverts are only allowed following a sticky
+          choice.
+
+    Produces a dialogue data structure like:
+    {
+        "knot_name": {
+            "content": [... strings ...],
+            "options": {
+                "option text": "knot_name",
+            }
+        },
+    }
+    """
+    def parse(self, ink):
+        """Reads a story written in a subset of Ink syntax (described above) and returns a
+        data structure of content and choices, also described above.
+        """
+        dialogue = {}
+        knots = self.split_knots(ink)
+        for line_num, knot_name, knot_ink in knots:
+            content, options = self.parse_knot_ink(line_num, knot_ink)
+            if len(options) == 0:
+                raise ValueError("line {}: Knot {} has no options".format(line_num, knot_name))
+            if knot_name in dialogue.keys():
+                raise ValueError("line {}: Knot {} already defined".format(line_num, knot_name))
+            dialogue[knot_name] = {"content": content, "options": options}
+        return dialogue
+
+    def parse_knot_ink(self, line_num, ink):
+        """Reads lines of code in a knot and returns a list of content and a dict of options.
+        """
+        content, options = self.split_content_from_options(ink)
+        content = [c.strip() for c in content]
+        content = self.split_and_join(content, lambda c: not c)
+        parsed_content = [c.strip() for c in content if c.strip()]
+        options = [o.strip() for o in options]
+        options = self.split_and_join(options, lambda o: re.match("\s*\+", o))
+        parsed_options = {}
+        for option in options[1:]: 
+            match = re.match("\s*\+(?P<text>.*)\->\s*(?P<knot>[a-zA-Z_]+)", option)
+            if not match: 
+                raise ValueError("line {}: Error reading option in knot.".format(line_num))
+            parsed_options[match.group('text').strip()] = match.group('knot')
+        return parsed_content, parsed_options
+
+    def split_and_join(self, strings, condition):
+        """Splits a list of strings on a condition and joins the results. For example, 
+
+            >>> vowel = lambda l: l in 'aeiou'
+            >>> split_and_join(list('abcdefghijklmnop'))
+            ['a', 'bcde', 'fghi', 'jklmno', 'p']
+        """
+        splits = [i for i, s in enumerate(strings) if condition(s)]
+        return [' '.join(strings[i:j]) for i, j in zip([0] + splits, splits + [len(strings)])]
+
+    def split_content_from_options(self, ink):
+        content, options = [], []
+        for line in ink:
+            if any(options) or re.match("\s*\+", line):
+                options.append(line)
+            else:
+                content.append(line)
+        return content, options
+
+    def split_knots(self, ink):
+        knots = []
+        current_name = None
+        current_ink = []
+        for i, line in enumerate(ink):
+            name = self.parse_knot_declaration(line)
+            # The first knot has not started yet 
+            if name is None and current_name is None:
+                continue
+            # Starting the first knot
+            elif name is not None and current_name is None:
+                current_name = name
+            # Starting a new knot
+            elif name is not None:
+                if len(current_ink) == 0:
+                    raise ValueError("Expected knot content at line {}".format(i))
+                starting_line_num = i - len(current_ink)
+                knots.append((starting_line_num, current_name, current_ink))
+                current_name = name
+                current_ink = []
+            # Continuing inside a knot
+            else:
+                current_ink.append(line)
+        # At end of file, the final knot's contents
+        if len(current_ink) == 0:
+            raise ValueError("Expected knot content at line {}".format(i))
+        starting_line_num = i - len(current_ink) - 1
+        knots.append((starting_line_num, current_name, current_ink))
+        return knots
+                
+    def parse_knot_declaration(self, line):
+        "Returns knot name if found"
+        match = re.match("===\s+([a-zA-Z_]+)\s+===", line)
+        return match.group(1) if match else None
+
