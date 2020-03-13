@@ -84,7 +84,6 @@ class TextLabelStack:
                 return label_index
 
     def set_highlight(self, i):
-        print("SETTING HIGHLIGHT TO {}".format(i))
         for label_index, label in enumerate(self.text_labels):
             label.highlight = (i == label_index)
 
