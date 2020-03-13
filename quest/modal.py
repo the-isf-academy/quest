@@ -4,9 +4,7 @@
 # window
 
 import arcade
-from quest.modal_button import ModalButton
 from quest.text_label import TextLabelStack
-from textwrap import wrap
 
 class Modal:
     """ A modal window is a pop-up that pauses the game until it is resolved.
@@ -17,7 +15,7 @@ class Modal:
     """
     width = 400
     height = 400
-    background_color = arcade.color.WHITE
+    background_color = arcade.color.LIGHT_GRAY
 
     def __init__(self, game):
         self.game = game
@@ -75,3 +73,33 @@ class Modal:
         )
         self.text_labels.draw()
         self.option_labels.draw()
+
+class DialogueModal(Modal):
+    """A modal window powered by a Dialogue object.
+    """
+    def __init__(self, game, dialogue):
+        self.dialogue = dialogue
+        super().__init__(game)
+
+    def set_text_labels(self):
+        self.text_labels = TextLabelStack(
+            self.dialogue.get_content(),
+            self.x_center,
+            self.y_center + self.height / 2
+        )
+
+    def set_option_labels(self):
+        self.option_labels = TextLabelStack(
+            self.dialogue.get_options(),
+            self.x_center,
+            self.y_center 
+        )
+        self.option_labels.set_highlight(0)
+
+    def choose_option(self, value):
+        self.dialogue.choose(value)
+        if self.dialogue.running:
+            self.set_text_labels()
+            self.set_option_labels()
+        else:
+            self.game.close_modal()
