@@ -1,6 +1,7 @@
 from quest.game import QuestGame
 from quest.map import Map, GridMapLayer
 from quest.maze import Maze
+from quest.sprite import Wall, NPC
 from itertools import product
 import arcade
 import random
@@ -11,6 +12,12 @@ from pathlib import Path
 def resolve_path(relative_path):
     here = Path(os.path.abspath(__file__)).parent
     return str(here / relative_path)
+
+class Loot(NPC):
+    def on_collision(self, sprite, game):
+        game.on_loot_collected()
+        print("Got a star!")
+        self.kill()
 
 class MazeMap(Map):
     """A Map which creates a wall layer using a :py:class`Maze`.
@@ -49,11 +56,11 @@ class MazeMap(Map):
             seed: Random seed to pass to the maze (see :py:meth:`Maze.generate`)
         """
         self.maze.generate(seed)
-        wall_map_layer = self.get_single_layer_for_role("wall")
+        wall_map_layer = self.get_layer_by_name("walls")
         wall_map_layer.clear()
         for x, y in self.maze.get_walls():
             wall_map_layer.add_sprite(x, y)
-        loot_map_layer = self.get_single_layer_for_role("loot")
+        loot_map_layer = self.get_layer_by_name("loot")
         loot_map_layer.clear()
         for x, y in random.sample(self.possible_loot_locations(), self.num_loot):
             loot_map_layer.add_sprite(x, y)
@@ -62,13 +69,13 @@ class MazeMap(Map):
         """Creates a new :py:class:`GridMapLayer` to hold walls.
         """
         return GridMapLayer(
-            name="maze",
+            name="walls",
             columns=self.columns,
             rows=self.rows,
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
             sprite_filename=resolve_path("images/box.png"),
-            roles=["wall", "display"]
+            sprite_class=Wall,
         )
 
     def get_loot_map_layer(self):
@@ -81,7 +88,7 @@ class MazeMap(Map):
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
             sprite_filename=resolve_path("images/star.png"),
-            roles=["loot", "display"]
+            sprite_class=Loot
         )
 
     def possible_loot_locations(self):
@@ -128,7 +135,7 @@ class MazeGame(QuestGame):
     grid_rows = 33
     player_sprite_image = resolve_path("images/boy_simple.png")
     player_scaling = 0.5
-    player_movement_speed = 5
+    player_speed = 5
     player_initial_x = 1.5 * tile_size
     player_initial_y = 1.5 * tile_size
     score = 0
@@ -146,13 +153,15 @@ class MazeGame(QuestGame):
         maze_map = MazeMap(self.grid_columns, self.grid_rows, self.tile_size, self.max_score)
         self.add_map(maze_map)
 
-    def on_loot_collected(self, loot):
-        """Called whenever loot is collected.
+    def setup_walls(self):
+        self.wall_list = self.get_current_map().get_layer_by_name("walls").sprite_list
 
-        Calls the superclass method (which kills the loot), increments the score, 
-        and checks whether the game is over.
+    def setup_npcs(self):
+        self.npc_list = self.get_current_map().get_layer_by_name("loot").sprite_list
+
+    def on_loot_collected(self):
+        """Called whenever loot is collected.
         """
-        super().on_loot_collected(loot)
         self.score += 1
         if self.score == self.max_score:
             self.game_over = True

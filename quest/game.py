@@ -1,8 +1,7 @@
-# QuestGame
-
 import arcade
-from quest.engines import NullPhysicsEngine
+from quest.engines import ContinuousPhysicsEngine
 from quest.errors import NoMapError, NoLayerError
+from quest.sprite import Player
 
 class QuestGame(arcade.Window):
     """Implements a top-down video game with a character on a map.
@@ -59,32 +58,22 @@ class QuestGame(arcade.Window):
         functions you need to change.
         """
         super().__init__(self.screen_width, self.screen_height, self.screen_title)
-        self.setup_player()
+        self.running = False
         self.setup_maps()
         if len(self.maps) > 0:
             self.set_current_map(0)
-        self.setup_non_playable_characters()
+        self.setup_player()
+        self.setup_walls()
+        self.setup_npcs()
         self.setup_physics_engine()
         self.center_view_on_player()
+        self.current_modal = None
 
     def run(self):
         """Starts the game.
         """
+        self.running = True
         arcade.run()
-
-    def setup_player(self):
-        """Creates the player sprite.
-
-        Initializes a sprite for the player, assigns its starting position,
-        and appends the player sprite to a SpriteList (Arcade likes to work 
-        with sprites in SpriteLists).
-        """
-        self.player_sprite = arcade.Sprite(self.player_sprite_image, self.player_scaling)
-        self.player_sprite.center_x = self.player_initial_x
-        self.player_sprite.center_y = self.player_initial_y
-        self.player_sprite.speed = self.player_speed
-        self.player_list = arcade.SpriteList()
-        self.player_list.append(self.player_sprite)
 
     def setup_maps(self):
         """Sets up the game maps.
@@ -96,6 +85,30 @@ class QuestGame(arcade.Window):
         This method will probably need to be overridden. 
         """
         self.maps = []
+
+    def setup_player(self):
+        """Creates the player sprite.
+
+        Initializes a sprite for the player, assigns its starting position,
+        and appends the player sprite to a SpriteList (Arcade likes to work 
+        with sprites in SpriteLists).
+        """
+        self.player = Player(self.player_sprite_image, self.player_scaling)
+        self.player.center_x = self.player_initial_x
+        self.player.center_y = self.player_initial_y
+        self.player.speed = self.player_speed
+        self.player_list = arcade.SpriteList()
+        self.player_list.append(self.player)
+
+    def setup_walls(self):
+        """Does any neccessary setup for NPCs.
+        """
+        self.wall_list = arcade.SpriteList()
+
+    def setup_npcs(self):
+        """Does any neccessary setup for NPCs.
+        """
+        self.npc_list = arcade.SpriteList()
 
     def add_map(self, game_map):
         """Adds a map to the list of maps.
@@ -130,11 +143,6 @@ class QuestGame(arcade.Window):
                     index, len(self.maps)))
         self.current_map_index = index
 
-    def setup_non_playable_characters(self):
-        """Does any neccessary setup for NPCs.
-        """
-        self.non_playable_character_list = arcade.SpriteList()
-
     def setup_physics_engine(self):
         """Sets up the physics engine.
 
@@ -152,11 +160,7 @@ class QuestGame(arcade.Window):
         :py:class:`NullPhysicsEngine` instead. Don't override this method 
         unless you understand Arcade's physics engines pretty well.
         """
-        try:
-            walls = self.get_current_map().get_single_layer_for_role("wall").sprite_list
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, walls)
-        except (NoMapError, NoLayerError):
-            self.physics_engine = NullPhysicsEngine(self.player_sprite)
+        self.physics_engine = ContinuousPhysicsEngine(self)
 
     def on_update(self, delta_time):
         """Updates the game's state.
@@ -169,13 +173,11 @@ class QuestGame(arcade.Window):
         Args:
             delta_time: How much time has passed since the last update.
         """
-        wall_collision_list = self.physics_engine.update()
-        for contacted_wall in wall_collision_list:
-            self.on_wall_collision(contacted_wall)
-        for layer in self.get_current_map().get_layers_for_role("loot"):
-            for loot in arcade.check_for_collision_with_list(self.player_sprite, layer.sprite_list):
-                self.on_loot_collected(loot)
-        self.scroll_viewport()
+        if self.running:
+            for npc in self.npc_list:
+                npc.on_update(self)
+            self.physics_engine.update()
+            self.scroll_viewport()
 
     def on_draw(self):
         """Draws the screen. 
@@ -187,31 +189,33 @@ class QuestGame(arcade.Window):
         """
         arcade.start_render()
         arcade.set_background_color(self.get_current_map().background_color)
-        for layer in self.get_current_map().get_layers_for_role("display"):
+        for layer in self.get_current_map().layers:
             layer.draw()
-        self.non_playable_character_list.draw()
+        self.npc_list.draw()
         self.player_list.draw()
         message = self.message()
         if message:
             arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
                     arcade.csscolor.WHITE, 18)
+        if self.current_modal:
+            self.current_modal.on_draw()
+
+    def open_modal(self, modal):
+        """Shows a modal window and pauses the game until the modal resolves.
+        """
+        self.running = False
+        self.current_modal = modal
+        self.current_modal.update_position(
+            self.view_left + self.screen_width / 2,
+            self.view_bottom + self.screen_height / 2,
+        )
+
+    def close_modal(self):
+        """Resolves a modal window and resumes the game.
+        """
+        self.current_modal = None
+        self.running = True
     
-    def on_wall_collision(self, wall):
-        """Called whenever the player bumps into a wall.
-
-        Args:
-            wall: A wall sprite which the player collided with.
-        """
-        pass
-
-    def on_loot_collected(self, loot):
-        """Called whenever the player encounters a piece of loot.
-
-        Args:
-            loot: A loot sprite which the player collided with.
-        """
-        loot.kill()
-
     def on_key_press(self, key, modifiers):
         """Handles key presses.
 
@@ -226,14 +230,17 @@ class QuestGame(arcade.Window):
         players from moving into walls. This method is automatically called at 
         the appropriate time.
         """
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = self.player_sprite.speed
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = -self.player_sprite.speed
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -self.player_sprite.speed
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = self.player_sprite.speed
+        if self.current_modal:
+            self.current_modal.on_key_press(key, modifiers)
+        else:
+            if key == arcade.key.UP or key == arcade.key.W:
+                self.player.change_y = self.player.speed
+            elif key == arcade.key.DOWN or key == arcade.key.S:
+                self.player.change_y = -self.player.speed
+            if key == arcade.key.LEFT or key == arcade.key.A:
+                self.player.change_x = -self.player.speed
+            elif key == arcade.key.RIGHT or key == arcade.key.D:
+                self.player.change_x = self.player.speed
 
     def on_key_release(self, key, modifiers):
         """Handles key releases.
@@ -246,20 +253,23 @@ class QuestGame(arcade.Window):
         is set to 0, indicating that the player no longer intends to keep
         moving. This method is automatically called at the appropriate time.
         """
-        if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+        if self.current_modal:
+            self.current_modal.on_key_release(key, modifiers)
+        else:
+            if key == arcade.key.UP or key == arcade.key.W:
+                self.player.change_y = 0
+            elif key == arcade.key.DOWN or key == arcade.key.S:
+                self.player.change_y = 0
+            elif key == arcade.key.LEFT or key == arcade.key.A:
+                self.player.change_x = 0
+            elif key == arcade.key.RIGHT or key == arcade.key.D:
+                self.player.change_x = 0
 
     def center_view_on_player(self):
         """Centers the viewport on the player.
         """
-        self.view_left = self.player_sprite.center_x - self.screen_width / 2
-        self.view_bottom = self.player_sprite.center_y - self.screen_height / 2
+        self.view_left = self.player.center_x - self.screen_width / 2
+        self.view_bottom = self.player.center_y - self.screen_height / 2
         self.update_viewport()
         self.scroll_viewport()
 
@@ -276,23 +286,23 @@ class QuestGame(arcade.Window):
         changed = False
 
         left_boundary = self.view_left + self.left_viewport_margin
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+        if self.player.left < left_boundary:
+            self.view_left -= left_boundary - self.player.left
             changed = True
 
         right_boundary = self.view_left + self.screen_width - self.right_viewport_margin
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
+        if self.player.right > right_boundary:
+            self.view_left += self.player.right - right_boundary
             changed = True
 
         top_boundary = self.view_bottom + self.screen_height - self.top_viewport_margin
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
+        if self.player.top > top_boundary:
+            self.view_bottom += self.player.top - top_boundary
             changed = True
 
         bottom_boundary = self.view_bottom + self.bottom_viewport_margin
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
+        if self.player.bottom < bottom_boundary:
+            self.view_bottom -= bottom_boundary - self.player.bottom
             changed = True
 
         if changed:

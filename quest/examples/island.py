@@ -1,5 +1,6 @@
 from quest.game import QuestGame
 from quest.map import TiledMap
+from quest.sprite import Background, Wall
 import arcade
 import os
 from pathlib import Path
@@ -31,7 +32,7 @@ class IslandAdventure(QuestGame):
     top_viewport_margin = 96
     player_initial_x = 300
     player_initial_y = 300
-    player_movement_speed = 6
+    player_speed = 6
 
     def setup_maps(self):
         """Sets up the map.
@@ -42,11 +43,14 @@ class IslandAdventure(QuestGame):
         sprites behave in particular ways.
         """
         super().setup_maps()
-        layer_roles = {
-            "Obstacles": ["wall", "display"],
-            "Background": ["display"],
+        sprite_classes = {
+            "Obstacles": Wall,
+            "Background": Background,
         }
-        self.add_map(TiledMap(resolve_path("images/island/island.tmx"), layer_roles))
+        self.add_map(TiledMap(resolve_path("images/island/island.tmx"), sprite_classes))
+
+    def setup_walls(self):
+        self.wall_list = self.get_current_map().get_layer_by_name("Obstacles").sprite_list
 
 if __name__ == '__main__':
     game = IslandAdventure()
