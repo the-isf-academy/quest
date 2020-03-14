@@ -1,5 +1,7 @@
 import arcade
 from quest.errors import NoLayerError, MultipleLayersError
+from quest.sprite import QuestSprite
+from quest.shim import process_layer
 from math import floor
 
 RED = 0
@@ -56,39 +58,10 @@ class Map:
         """
         layers = [layer for layer in self.layers if layer.name == layer_name]
         if len(layers) == 0:
-            raise NoLayerError("Map has no layer named {}".format(layer_name))
+            raise NoLayerError("Map has no layer named {} (layers are: {})".format(layer_name, 
+                    ", ".join(layer.name for layer in self.layers)))
         elif len(layers) > 1: 
             raise MultipleLayersError("Map has more than one layer named {}".format(layer_name))
-        else:
-            return layers[0]
-
-    def get_layers_for_role(self, role):
-        """Looks up all layers having a particular role.
-
-        Args:
-            role: A string naming the role.
-
-        Returns: A list of zero or more MapLayers.
-        
-        """
-        return [layer for layer in self.layers if role in layer.roles]
-
-    def get_single_layer_for_role(self, role):
-        """Looks up a single layer having a particular role.
-
-        Returns the one layer having a role. If there is not exactly one layer,
-        raises an error.
-
-        Args:
-            role: A string naming the role.
-            
-        Returns: One MapLayer
-        """
-        layers = self.get_layers_for_role(role)
-        if len(layers) == 0:
-            raise NoLayerError("Map has no layer for role {}".format(role))
-        elif len(layers) > 1: 
-            raise MultipleLayersError("Map has more than one layer with role {}".format(role))
         else:
             return layers[0]
 
@@ -97,26 +70,29 @@ class TiledMap(Map):
 
     Use TiledMap when you want to design your map using
     [Tiled](https://www.mapeditor.org/). This app saves maps as TMX files.
+
+    Arguments:
+        filename (str): Path to the .tmx tilemap file
+        sprite_classes: {layer_name: SpriteClass} dict specifying the sprite class
+            that should be used for each layer. 
     """
-    def __init__(self, filename, layer_roles):
+    def __init__(self, filename, sprite_classes=None):
         super().__init__()
         tilemap = arcade.tilemap.read_tmx(filename)
-        for layer_name, roles in layer_roles.items():
-            sprite_list = arcade.tilemap.process_layer(tilemap, layer_name, self.tile_scaling)
-            layer = MapLayer(layer_name, sprite_list, roles)
+        for layer_name, sprite_class in sprite_classes.items():
+            sprite_list = process_layer(sprite_class, tilemap, layer_name, self.tile_scaling)
+            layer = MapLayer(layer_name, sprite_list)
             self.add_layer(layer)
 
 class MapLayer:
     """
-    Each Map is made up of one or more MapLayers. Each MapLayer contains sprites assigned to particular
-    roles in the game. (The game defines the meaning of roles, but several are built-in:
-    layers with the "display" role will be shown and sprites in layers with the "wall" role will prevent 
-    the player from walking into them.
+    Each Map is made up of one or more MapLayers. 
     """
-    def __init__(self, name, sprite_list=None, roles=None):
+    sprite_class = QuestSprite
+
+    def __init__(self, name, sprite_list=None):
         self.name = name
         self.sprite_list = sprite_list or arcade.SpriteList()
-        self.roles = roles or []
 
     def draw(self):
         self.sprite_list.draw()
@@ -131,13 +107,15 @@ class GridMapLayer(MapLayer):
     """
     A MapLayer designed for use with GridMap. Makes it easy to add new sprites at particular grid locations.
     """
-    def __init__(self, name, columns, rows, pixel_width, pixel_height, sprite_filename=None, roles=None):
-        super().__init__(name, roles=roles)
+    def __init__(self, name, columns, rows, pixel_width, pixel_height, sprite_filename=None, sprite_class=None):
+        super().__init__(name)
         self.columns = columns
         self.rows = rows
         self.pixel_width = pixel_width
         self.pixel_height = pixel_height
         self.sprite_filename = sprite_filename
+        if sprite_class:
+            self.sprite_class = sprite_class
 
     def add_sprite(self, tile_x, tile_y, sprite=None):
         sprite = sprite or self.create_sprite()
@@ -147,7 +125,7 @@ class GridMapLayer(MapLayer):
     def create_sprite(self):
         if self.sprite_filename is None:
             raise ValueError("Can't add sprites to GridMapLayer unless sprite_filename is defined.")
-        return arcade.Sprite(self.sprite_filename)
+        return self.sprite_class(self.sprite_filename)
 
     def get_pixel_position(self, tile_position, center=True):
         tile_x, tile_y = tile_position
