@@ -1,11 +1,7 @@
-# TODO:
-# - Decide protocol for collisions (maybe just callbacks?) and implement
-# - call sprite.on_collision(collided); the sprite can figure out what it is
-# - player max tile off by one
-# and deal with it. This means we need Wall sprites, NPC sprites, and a Player sprite.
-
 import arcade
 from arcade.sprite_list import SpriteList
+from arcade.physics_engines import PhysicsEngineSimple
+from arcade import check_for_collision_with_list
 from itertools import chain
 from collections import defaultdict
 from easing_functions import LinearInOut
@@ -13,45 +9,37 @@ from quest.helpers import Direction, SpriteListList
 from time import time
 from math import sqrt
 
-class NullPhysicsEngine:
-    """A physics engine which just updates the player's position.
-    """
-    def __init__(self, player_sprite):
-        self.player_sprite = player_sprite
-
-    def update(self):
-        self.player_sprite.center_x += self.player_sprite.change_x
-        self.player_sprite.center_y += self.player_sprite.change_y
-        return arcade.SpriteList()
-
 class QuestPhysicsEngine:
-    """Currently does not handle NPCs.
+    """Base class for Quest Physics Engines
     """
-    def __init__(self, player_list, wall_list=None, npc_list=None):
-        self.player_list=player_list
-        self.wall_list=wall_list
-        self.npc_list=npc_list
+    def __init__(self, game):
+        self.game = game
+        self.player_list=game.player_list
+        self.wall_list=game.wall_list
+        self.npc_list=game.npc_list
 
-    def update(self):
-        collisions = {}
-        return collisions
-
-class ContinuousPhysicsEngine(QuestPhysicsEngine):
-    """Currently does not handle NPCs.
-    """
-    def __init__(self, player_list, wall_list=None, npc_list=None):
-        super().__init__(player_list, wall_list, npc_list)
-        self.internal_engine = PhysicsEngineSimple(
-            player=self.player(),
-            walls=self.wall_list
-        )
-
-    def update(self):
-        wall_colisions = self.internal_engine.update()
-        return [(self.player(), wall) for wall in wall_collisions]
+    def update(self, game):
+        pass
 
     def player(self):
         return self.player_list.sprite_list[0]
+
+class ContinuousPhysicsEngine(QuestPhysicsEngine):
+    """A continuous physics engine allows sprites to be at any point.
+    """
+    def __init__(self, game):
+        super().__init__(game)
+        self.internal_engine = PhysicsEngineSimple(self.player(), self.wall_list)
+
+    def update(self):
+        wall_collisions = self.internal_engine.update()
+        for wall in wall_collisions:
+            self.player().on_collision(wall, self.game)
+            wall.on_collision(self.player(), self.game)
+        npc_collisions = check_for_collision_with_list(self.player(), self.npc_list)
+        for npc in npc_collisions:
+            self.player().on_collision(npc, self.game)
+            npc.on_collision(self.player(), self.game)
 
 class DiscretePhysicsEngine(QuestPhysicsEngine):
     """A physics engine which snaps sprite movement to specific gridpoints.
@@ -76,24 +64,21 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
     """
     
     tile_transition_cutoff = 0.5
-    default_easing_class = LinearInOut
+    easing_class = LinearInOut
     
-    def __init__(self, player_list, grid_map_layer, walls=None, npcs=None, 
-            diagonal=True, easing_class=None, check_for_new_sprites=True):
-        self.player_list = player_list
+    def __init__(self, game, grid_map_layer, diagonal=True, check_for_new_sprites=True):
+        super().__init__(game)
         self.grid = grid_map_layer
-        self.walls = walls or SpriteList()
-        self.npcs = npcs or SpriteList()
         self.diagonal = diagonal
-        self.easing = (easing_class or self.default_easing_class)()
+        self.easing = self.easing_class()
         self.check_for_new_sprites = check_for_new_sprites
-        self.wall_tiles = defaultdict(list)
-        for wall in self.walls:
-            tile = self.grid.get_tile_position((wall.center_x, wall.center_y))
-            self.wall_tiles[tile].append(wall)
-        sprite_lists = [self.player_list, self.walls, self.npcs]
+        sprite_lists = [self.player_list, self.wall_list, self.npc_list]
+        self.all_sprites = SpriteListList(sprite_lists)
         self.dynamic_sprites = SpriteListList([l for l in sprite_lists if not l.is_static])
-        self.ensure_sprite_metadata()
+        self.ensure_sprite_metadata(all_sprites=True)
+        self.tile_positions = defaultdict(list)
+        for sprite in self.all_sprites:
+            self.tile_positions[sprite.current_tile].append(sprite)
         
     def update(self):
         if self.check_for_new_sprites:
@@ -103,16 +88,17 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
                 self.begin_move(sprite)
             elif sprite.moving:
                 self.continue_move(sprite)
-        return [] # TEMP... expects collision list
-        # No, here we need a defaultdict(list) of sprites by their current_positions. 
-        # Use that for collision logic
                 
     def begin_move(self, sprite):
         direction = Direction.from_vector((sprite.change_x, sprite.change_y), self.diagonal)
-        destination = self.tile_in_direction(sprite.origin_tile, direction) 
+        ox, oy = sprite.origin_tile
+        vx, vy = direction.to_vector()
+        destination = (ox + vx, oy + vy)
         if self.grid.tile_in_grid(destination):
-            if destination in self.wall_tiles:
-                pass # Callback
+            wall = self.get_wall(self.tile_positions[destination])
+            if wall:
+                self.player().on_collision(wall, self.game)
+                wall.on_collision(self.player(), self.game)
             else:
                 sprite.moving = True
                 sprite.move_start = time()
@@ -126,7 +112,12 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
             duration *= sqrt(2)
         sprite.t = self.ease((time() - sprite.move_start) / duration)
         if sprite.t >= self.tile_transition_cutoff:
+            self.tile_positions[sprite.current_tile].remove(sprite)
             sprite.current_tile = sprite.destination_tile
+            for other_sprite in self.tile_positions[sprite.current_tile]:
+                sprite.on_collision(other_sprite, self.game)
+                other_sprite.on_collision(sprite, self.game)
+            self.tile_positions[sprite.current_tile].append(sprite)
         if sprite.t >= 1.0:
             self.end_move(sprite)
         else:
@@ -139,19 +130,10 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         sprite.center_x, sprite.center_y = self.grid.get_pixel_position(sprite.destination_tile)
         sprite.origin_tile = sprite.current_tile = sprite.destination_tile
 
-    def tile_in_direction(self, tile, direction):
-        """Returns the next tile in a diven direction
-        """
-        tx, ty = tile
-        if direction & Direction.RIGHT:
-            tx += 1
-        if direction & Direction.UP:
-            ty += 1
-        if direction & Direction.LEFT:
-            tx -= 1
-        if direction & Direction.DOWN:
-            ty -= 1
-        return tx, ty
+    def get_wall(self, sprite_list):
+        for sprite in sprite_list:
+            if sprite in self.wall_list:
+                return sprite
 
     def interpolate(self, p0, p1, t):
         (x0, y0), (x1, y1) = p0, p1
@@ -160,8 +142,9 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
     def ease(self, x):
         return self.easing.ease(x)
 
-    def ensure_sprite_metadata(self):
-        for sprite in self.dynamic_sprites:
+    def ensure_sprite_metadata(self, all_sprites=False):
+        sprites = self.all_sprites if all_sprites else self.dynamic_sprites
+        for sprite in sprites:
             if not hasattr(sprite, 'current_tile'):
                 sprite.origin_tile = self.grid.get_tile_position((sprite.center_x, sprite.center_y))
                 sprite.current_tile = sprite.origin_tile
