@@ -41,6 +41,7 @@ class Dialogue:
             start_at: (default "START") Name of knot to start at. 
         """
         self.current_knot = start_at
+        self.knots_visited = [self.current_knot]
         self.running = True
 
     def get_content(self):
@@ -65,6 +66,7 @@ class Dialogue:
             self.running = False
         else:
             self.current_knot = choices[choice]
+            self.knots_visited.append(self.current_knot)
 
 class DialogueRunner:
     """Runs a Dialgoue from the command line. This is useful for testing out dialogue.
