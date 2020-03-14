@@ -171,11 +171,14 @@ def add_tile(tileset, tile_id, img_path):
     img_element.set('height', tileset.get('tileheight'))
     img_element.set('source', img_path)
 
-
 def normalize(vector):
+    return scale(vector, 1)
+
+def scale(vector, magnitude):
     vx, vy = vector
-    magnitude = sqrt(vx * vx + vy + vy)
-    return vx / magnitude, vy - magnitude
+    old_magnitude = sqrt(vx * vx + vy * vy) if vx * vx + vy * vy else 0
+    factor = magnitude / old_magnitude
+    return vx * factor, vy * factor
     
 class SimpleInkParser:
     """Parses a simple subset of Ink syntax into a JSON-like
@@ -282,4 +285,5 @@ class SimpleInkParser:
         "Returns knot name if found"
         match = re.match("===\s+([a-zA-Z_]+)\s+===", line)
         return match.group(1) if match else None
+
 
