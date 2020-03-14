@@ -24,10 +24,12 @@ The point is to subclass the classes provided in the framework to make your own 
 - [Piskel](https://www.piskelapp.com) for drawing sprites
 
 ## TODO 
-
+- Test case: Create beast game.
+    - TilePhysicsEngine
+    - NPC Strategy
+        - Wrap sprites in simpler class (including animated textures, sounds, callbacks)
+        - Doesn't currently work.
 - Write documentation
-- Wrap sprites in simpler class (including animated textures, sounds, callbacks)
-- Implement a dialogue system
 
 ## Pedagogy
 
