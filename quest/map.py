@@ -21,7 +21,7 @@ class Map:
 
     Attributes:
         background_color: a 3-tuple of integers for red, green, blue. Each from 0-255.
-            The :py:module:`arcade:color` module also predefines many colors.
+            The :py:mod:`arcade:color` module also predefines many colors.
         tile_scaling: Factor by which to scale all map tiles. Default is 1.
     """
     background_color = (RED, GREEN, BLUE)
