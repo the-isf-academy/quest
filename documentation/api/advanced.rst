@@ -7,5 +7,4 @@ be read by beginners. Feel free to browse them and ask a teacher if you're curio
 .. toctree::
 
    engines
-   easing
    helpers
