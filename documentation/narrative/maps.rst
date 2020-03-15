@@ -1,5 +1,7 @@
-Maps
-====
+.. _creating_maps:
+
+Creating Maps
+=============
 
 - Game map with multiple layers
 - Layer with roles. 

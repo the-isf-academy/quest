@@ -1,7 +1,7 @@
 Sprites
 =======
 
-.. automodule:: quest.sprites
+.. automodule:: quest.sprite
    :members:
    :undoc-members:
    
