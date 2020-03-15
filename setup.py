@@ -3,7 +3,7 @@ from pathlib import Path
 
 setuptools.setup(
     name="questgame", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="Chris Proctor",
     author_email="chris@chrisproctor.net",
     description="A simple game framework",
@@ -17,4 +17,11 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    install_requires=[
+        "arcade==2.3.8",
+        "easing-functions>=1.0.3",
+        "numpy>=1.17.4",
+        "Pillow>=6.2.1",
+        "tqdm>=4.42.1",
+    ]
 )
