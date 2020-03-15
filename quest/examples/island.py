@@ -6,6 +6,8 @@ import os
 from pathlib import Path
 
 def resolve_path(relative_path):
+    """A helper function to find images and other resources.
+    """
     here = Path(os.path.abspath(__file__)).parent
     return str(here / relative_path)
 
@@ -14,11 +16,6 @@ class IslandAdventure(QuestGame):
 
     :py:class:`IslandAdventure` shows off the basic features of the Quest 
     framework, loading a map and letting the player explore it. 
-    To run this example, make sure you have 
-    :doc:`installed Quest <tutorial/install>`. Then run::
-
-        $ python -m quest.examples.island
-
     After you play it, check out the sorce code by clicking on "source" in the
     blue bar just above.
     """
@@ -38,18 +35,20 @@ class IslandAdventure(QuestGame):
         """Sets up the map.
 
         Uses a :py:class:`TiledMap` to load the map from a ``.tmx`` file,
-        created using :doc:`Tiled <tiled:manual/introduction>`. The layers
-        in the map are assigned :doc:`roles <narrative/map>` so that their 
-        sprites behave in particular ways.
+        created using :doc:`Tiled <tiled:manual/introduction>`. 
         """
         super().setup_maps()
         sprite_classes = {
             "Obstacles": Wall,
             "Background": Background,
         }
-        self.add_map(TiledMap(resolve_path("images/island/island.tmx"), sprite_classes))
+        island_map = TiledMap(resolve_path("images/island/island.tmx"), sprite_classes)
+        self.add_map(island_map)
 
     def setup_walls(self):
+        """Assigns sprites to `self.wall_list`. These sprites will function as walls, blocking
+        the player from passing through them.
+        """
         self.wall_list = self.get_current_map().get_layer_by_name("Obstacles").sprite_list
 
 if __name__ == '__main__':

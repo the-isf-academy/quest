@@ -1,14 +1,3 @@
-"""A collection of various helpers.
-
-===============================================================================
-Note: Advanced!
-Most of Quest was written with student readers in mind. Not so for this module.
-We tried to write in good, stylish, clear Python, but there will definitely be
-code here that is unfamiliar to you. Feel free to ask a teacher if you are 
-interested, or just don't worry about it :)
-===============================================================================
-"""
-
 from PIL import Image
 import xml.etree.ElementTree as ET
 from itertools import product, chain
@@ -38,6 +27,10 @@ def shade(color, ratio=0.25):
     return tuple(round(c * (1 - ratio)) for c in color)
 
 class Direction(Flag):
+    """Direction lets you talk about directions like `Direction.DOWN`, `Direction.UPLEFT`
+    or using compass directions such as `Direction.NE`.
+    """
+
     NONE = 0
     RIGHT = auto()
     UP = auto()
@@ -61,7 +54,19 @@ class Direction(Flag):
 
     @classmethod
     def from_vector(cls, vector, diagonal=True):
-        """Assuming origin at bottom left
+        """Converts an (x, y) tuple into a direction. 
+
+            >>> Direction.from_vector((-1, 0))
+            Direction.LEFT
+            >>> Direction.from_vector((0.4, 0.6))
+            Direction.UPRIGHT
+
+        Arguments: 
+            vector (float, float): An (x, y) tuple.
+            diagonal (bool): Whether to include diagonal directions. Defaults to True.
+
+        Returns:
+            A Direction.
         """
         vx, vy = vector
         result = cls.NONE
@@ -78,10 +83,20 @@ class Direction(Flag):
         return result
 
     def is_diagonal(self):
+        """Returns whether the Direction is diaognal.
+
+            >>> Direction.NW.is_diagonal()
+            True
+        """
         return self in [self.NE, self.NW, self.SW, self.SE]
 
     def to_vector(self, normalized=False):
-        """Returns a vector...
+        """Converts the Direction into an (x, y) tuple.
+
+        Arugments: 
+            normalized (bool): Whether to normalize the vector so that its 
+                magintude is 1. Defaults to False, in which case x and y are
+                each either 0 or 1.
         """
         vx, vy = 0, 0
         if self & self.RIGHT:
@@ -181,24 +196,16 @@ def scale(vector, magnitude):
     return vx * factor, vy * factor
     
 class SimpleInkParser:
-    """Parses a simple subset of Ink syntax into a JSON-like
-    data structure. Constraints:
-        - Must be valid Ink.
-        - All content must be in a knot. Knots must be delimited 
-          with three equal signs on either side of the knot name.
-        - The only syntax allowed is knot declarations, sticky choices
-          (+) and diverts (->). Diverts are only allowed following a sticky
-          choice.
+    """Parses a simple subset of Ink syntax into a JSON-like data structure. 
 
-    Produces a dialogue data structure like:
-    {
-        "knot_name": {
-            "content": [... strings ...],
-            "options": {
-                "option text": "knot_name",
-            }
-        },
-    }
+    The ink must meet the following constraints:
+
+    - Must be valid Ink.
+    - All content must be in a knot. Knots must be delimited 
+      with three equal signs on either side of the knot name.
+    - The only syntax allowed is knot declarations, sticky choices
+      (+) and diverts (->). Diverts are only allowed following a sticky
+      choice.
     """
     def parse(self, ink):
         """Reads a story written in a subset of Ink syntax (described above) and returns a
