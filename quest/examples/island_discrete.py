@@ -12,12 +12,12 @@ def resolve_path(relative_path):
     return str(here / relative_path)
 
 class IslandAdventureDiscrete(QuestGame):
-    """A very simple subclass of :py:class:`QuestGame`.
+    """An alternate version of Island Adventure, using discrete movement.
 
-    :py:class:`IslandAdventure` shows off the basic features of the Quest 
-    framework, loading a map and letting the player explore it. 
-    After you play it, check out the sorce code by clicking on "source" in the
-    blue bar just above.
+    To run this example::
+
+        $ python -m quest.examples.island_discrete
+
     """
     player_sprite_image = resolve_path("images/boy_simple.png")
     player_initial_x = 300

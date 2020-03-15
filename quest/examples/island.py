@@ -14,6 +14,10 @@ def resolve_path(relative_path):
 class IslandAdventure(QuestGame):
     """A very simple subclass of :py:class:`QuestGame`.
 
+    To run this example::
+
+        $ python -m quest.examples.island
+
     :py:class:`IslandAdventure` shows off the basic features of the Quest 
     framework, loading a map and letting the player explore it. 
     After you play it, check out the sorce code by clicking on "source" in the
