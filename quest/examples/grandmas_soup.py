@@ -23,7 +23,7 @@ class GrandmasSoupGame(QuestGame):
     are subclasses of :py:class:`NPC`. A :py:class:`quest.modal.DialogueModal` is used for the conversations
     with Grandma. To run this example, run::
 
-        $ python -m quest.examples.island
+        $ python -m quest.examples.grandmas_soup
 
     After you play it, check out the sorce code by clicking on "source" in the
     blue bar just above.
