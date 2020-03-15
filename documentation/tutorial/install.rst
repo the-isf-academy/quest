@@ -1,15 +1,15 @@
 Intallation
 ===========
 
-Quest will be distributed on PyPI, so that you can install it with pip. But for now, you have to install it manually. As usual, a virtual env is recommended but not required.
+Quest is distributed on PyPI, so that you can install it with pip
 ::
 
-    $ python3 -m venv env
-    $ source env/bin/activate
+    $ pip install questgame
+
+However, if you are using quest for class you might need to look at and edit its files. In this case, 
+you want to install an editable copy of Quest::
+
     $ git clone https://github.com/cproctor/quest.git
-    $ cd quest
-    $ pip install -r requirements.txt
-    $ pip install -e .
-    $ cd quest/examples
-    $ python maze_demo.py
+    $ pip install --editable quest
+    $ python -m quest.examples.island
    
