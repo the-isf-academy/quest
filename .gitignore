@@ -4,3 +4,5 @@ __pycache__/*
 *.swo
 documentation/_build/*
 upload.sh
+dist/
+questgame.egg-info/
