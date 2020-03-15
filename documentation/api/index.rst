@@ -8,7 +8,8 @@ This section of the documentation explains each class and function in the Quest 
 
    game
    map
-   sprites
-   engines
+   sprite
    maze
-   helpers
+   modal
+   dialogue
+   advanced

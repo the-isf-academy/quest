@@ -6,3 +6,8 @@ Getting started
 - Change the examples
 - Make a plan
 - Read the code
+
+.. toctree::
+   :maxdepth: 4
+
+   install

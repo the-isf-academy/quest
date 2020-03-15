@@ -12,7 +12,6 @@ Quest Game Framework
    :caption: Contents:
 
    tutorial/index
-   narrative/index
    examples/index
    api/index
    pedagogy/index
