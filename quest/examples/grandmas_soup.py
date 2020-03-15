@@ -10,54 +10,28 @@ import os
 from pathlib import Path
 
 def resolve_path(relative_path):
+    """A helper function to find images and other resources.
+    """
     here = Path(os.path.abspath(__file__)).parent
     return str(here / relative_path)
 
-class Grandma(NPC):
-    repel_distance = 10
-
-    def on_collision(self, sprite, game):
-        self.repel(sprite)
-        game.talk_with_grandma()
-
-    def repel(self, sprite):
-        "Backs the sprite away from self"
-        away = (self.center_x - sprite.center_x, self.center_y - sprite.center_y)
-        away_x, away_y = scale(away, self.repel_distance)
-        sprite.center_x = sprite.center_x - away_x
-        sprite.center_y = sprite.center_y - away_y
-        sprite.stop()
-
-class Item(NPC):
-    description = "item"
-    def on_collision(self, sprite, game):
-        game.got_item(self.description)
-        self.kill()
-
-class Carrots(Item):
-    description = "carrots"
-
-class Mushroom(Item):
-    description = "mushroom"
-
-class Potatoes(Item):
-    description = "potatoes"
-
-class Tomatos(Item):
-    description = "tomatos"
-
 class GrandmasSoupGame(QuestGame):
-    """A very simple subclass of :py:class:`QuestGame`.
+    """Help Grandma find all the ingredients for her soup.
 
-    :py:class:`GrandmasSoupGame` shows off the basic features of the Quest 
-    framework, loading a map and letting the player explore it. 
-    To run this example, make sure you have 
-    :doc:`installed Quest <tutorial/install>`. Then run::
+    :py:class:`GrandmasSoupGame` shows off the full range of features in the Quest
+    framework, loading a map and letting the player explore it. Grandma and the Vegetables
+    are subclasses of :py:class:`NPC`. A :py:class:`quest.modal.DialogueModal` is used for the conversations
+    with Grandma. To run this example, run::
 
         $ python -m quest.examples.island
 
     After you play it, check out the sorce code by clicking on "source" in the
     blue bar just above.
+
+    Attributes:
+        dialogue: A :py:class:`Dialogue` containing the game's conversation. 
+        modal: A :py:class:`DialogueModal` to show the dialogue.
+        items: A list to keep track of which items the player has collected.
     """
 
     player_sprite_image = resolve_path("images/boy_simple.png")
@@ -77,16 +51,8 @@ class GrandmasSoupGame(QuestGame):
         self.modal = DialogueModal(self, self.dialogue)
         self.items = []
 
-    def run(self):
-        super().run()
-
     def setup_maps(self):
-        """Sets up the map.
-
-        Uses a :py:class:`TiledMap` to load the map from a ``.tmx`` file,
-        created using :doc:`Tiled <tiled:manual/introduction>`. The layers
-        in the map are assigned :doc:`roles <narrative/map>` so that their 
-        sprites behave in particular ways.
+        """Sets up the standard island map.
         """
         super().setup_maps()
         sprite_classes = {
@@ -96,9 +62,13 @@ class GrandmasSoupGame(QuestGame):
         self.add_map(TiledMap(resolve_path("images/island/island.tmx"), sprite_classes))
 
     def setup_walls(self):
+        """As in other examples, assigns all sprites in the "Obstacles" layer to be walls.
+        """
         self.wall_list = self.get_current_map().get_layer_by_name("Obstacles").sprite_list
 
     def setup_npcs(self):
+        """Creates and places Grandma and the vegetables.
+        """
         npc_data = [
             [Grandma, "images/people/grandma.png", 3, 400, 400],
             [Carrots, "images/items/carrots.png", 1, 220, 640],
@@ -118,14 +88,72 @@ class GrandmasSoupGame(QuestGame):
         grandma.strategy = walk
 
     def talk_with_grandma(self):
+        """Opens the dialogue modal to show conversation with Grandma. This is called
+        when the player collides with Grandma.
+        """
         self.open_modal(self.modal)
 
     def got_item(self, description):
+        """Adds the item's description to the items list. This is called when the 
+        player collides with a vegetable.
+
+        Arguments:
+            description: The item description.
+        """
         self.items.append(description.upper())
         if len(self.items) < 4:
             self.dialogue.run(self.items[-1])
         else:
             self.dialogue.run("SOUP")
+
+class Grandma(NPC):
+    """Grandma is an NPC. 
+
+    Attributes:
+        repel_distance: How far back the player should be pushed after colliding
+            with Grandma. This is necessary because otherwise when the dialogue modal 
+            closed, it would immediately reopen. Grandma is interesting, but not that 
+            interesting.
+    """
+    repel_distance = 10
+
+    def on_collision(self, sprite, game):
+        """When the player collides with Grandma, she repels the player and then 
+        :py:meth:`talk_with_grandma` is called to open the dialogue modal.
+        """
+        self.repel(sprite)
+        game.talk_with_grandma()
+
+    def repel(self, sprite):
+        "Backs the sprite away from self"
+        away = (self.center_x - sprite.center_x, self.center_y - sprite.center_y)
+        away_x, away_y = scale(away, self.repel_distance)
+        sprite.center_x = sprite.center_x - away_x
+        sprite.center_y = sprite.center_y - away_y
+        sprite.stop()
+
+class Vegetable(NPC):
+    """A vegetable is an NPC that can be picked up.
+    """
+    description = "item"
+    def on_collision(self, sprite, game):
+        """When the player collides with a vegetable, it tells the game and then 
+        kills itself.
+        """
+        game.got_item(self.description)
+        self.kill()
+
+class Carrots(Vegetable):
+    description = "carrots"
+
+class Mushroom(Vegetable):
+    description = "mushroom"
+
+class Potatoes(Vegetable):
+    description = "potatoes"
+
+class Tomatos(Vegetable):
+    description = "tomatos"
 
 if __name__ == '__main__':
     game = GrandmasSoupGame()

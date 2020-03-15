@@ -9,9 +9,13 @@ class QuestGame(arcade.Window):
     :py:class:`QuestGame` is the central class in the :doc:`../index`, 
     which is built on top of :doc:`arcade:index`. :py:class:`QuestGame` 
     is a subclass of :py:class:`arcade:arcade.Window`.
-    The intended usage of :py:class:`QuestGame` is to create a subclass 
-    for your game and then override whatever you need to change from 
-    the default behavior. 
+    To create your own game, create a subclass of :py:class:`QuestGame`
+    and then override whatever you need to change from the default behavior. 
+
+    When :py:class:`QuestGame` is initialized, it sets up the player, the maps,
+    the walls, the NPCs, the physics engine, and centers the viewport on the player.
+    Rather than overriding :py:meth:`__init__`, consider overriding just the setup 
+    functions you need to change.
 
     Attributes:
         screen_width: Width in pixels of the game window.
@@ -51,11 +55,6 @@ class QuestGame(arcade.Window):
 
     def __init__(self):
         """Initializes the game window and sets up other classes. 
-
-        Calls the superclass initializer and then sets up the player, the maps,
-        the NPCs, the physics engine, and centers the viewport on the player.
-        Rather than overriding __init__, consider overriding just the setup 
-        functions you need to change.
         """
         super().__init__(self.screen_width, self.screen_height, self.screen_title)
         self.running = False
@@ -78,11 +77,12 @@ class QuestGame(arcade.Window):
     def setup_maps(self):
         """Sets up the game maps.
 
-        self.maps should be a list of quest.map.Map objects, which get 
+        self.maps should be assigned to a list of :py:class:`Map` objects, which get 
         initialized here. Each map represents a 'level' or 'scene' of the game.
         Once the list of maps is created, use :py:meth:`set_current_map` to 
         set one of the maps as the initial current map.
-        This method will probably need to be overridden. 
+        This method will need to be overridden by any game using a map.
+        For more details, see :ref:`creating_maps`
         """
         self.maps = []
 

@@ -1,32 +1,34 @@
 from quest.game import QuestGame
 from quest.map import Map, GridMapLayer, TiledMap
+from quest.sprite import Background, Wall
 from quest.engines import DiscretePhysicsEngine
-from quest.sprite import Player, Wall, Background
 import os
 from pathlib import Path
 
-class DebugPlayer(Player):
-    def on_collision(self, sprite):
-        print("Collided with {}".format(sprite))
-
 def resolve_path(relative_path):
+    """A helper function to find images and other resources.
+    """
     here = Path(os.path.abspath(__file__)).parent
     return str(here / relative_path)
 
-class IslandDiscrete(QuestGame):
+class IslandAdventureDiscrete(QuestGame):
+    """A very simple subclass of :py:class:`QuestGame`.
+
+    :py:class:`IslandAdventure` shows off the basic features of the Quest 
+    framework, loading a map and letting the player explore it. 
+    After you play it, check out the sorce code by clicking on "source" in the
+    blue bar just above.
+    """
     player_sprite_image = resolve_path("images/boy_simple.png")
     player_initial_x = 300
     player_initial_y = 300
-    player_class = DebugPlayer
     player_speed = 6
 
     def setup_maps(self):
         """Sets up the map.
 
         Uses a :py:class:`TiledMap` to load the map from a ``.tmx`` file,
-        created using :doc:`Tiled <tiled:manual/introduction>`. The layers
-        in the map are assigned :doc:`roles <narrative/map>` so that their 
-        sprites behave in particular ways.
+        created using :doc:`Tiled <tiled:manual/introduction>`.
         """
         super().setup_maps()
         sprite_classes = {
@@ -38,13 +40,27 @@ class IslandDiscrete(QuestGame):
         self.get_current_map().add_layer(layer)
 
     def setup_walls(self):
+        """Assigns sprites to `self.wall_list`. These sprites will function as walls, blocking
+        the player from passing through them.
+        """
         self.wall_list = self.get_current_map().get_layer_by_name("Obstacles").sprite_list
 
     def setup_physics_engine(self):
+        """Uses :py:class:`DiscretePhysicsEngine` instead of the standard :py:class:`ContinuousPhysicsEngine`.
+        The result is that the player snaps to a grid instead of moving smoothly to any position.
+
+        A game's physics engine is responsible for enforcing the rules of the game's reality. 
+        In a fancy 3d game, the physics engine is full of intense math to keep track of objects 
+        flying around, bouncing off of walls, and breaking into pieces. 
+    
+        Quest's physics engines are simpler. They just need to make sure nobody walks through walls,
+        and to check when sprites collide. There are two physics engines built-in: A continuous (the
+        default) and a discrete (used here). 
+        """
         grid = self.get_current_map().get_layer_by_name('grid')
         self.physics_engine = DiscretePhysicsEngine(self, grid)
         
 if __name__ == '__main__':
-    game = IslandDiscrete()
+    game = IslandAdventureDiscrete()
     game.run()
 
