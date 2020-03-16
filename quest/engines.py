@@ -94,7 +94,7 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         ox, oy = sprite.origin_tile
         vx, vy = direction.to_vector()
         destination = (ox + vx, oy + vy)
-        if self.grid.tile_in_grid(destination):
+        if self.grid.position_in_grid(destination):
             wall = self.get_wall(self.tile_positions[destination])
             if wall:
                 self.player().on_collision(wall, self.game)
@@ -146,7 +146,7 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         sprites = self.all_sprites if all_sprites else self.dynamic_sprites
         for sprite in sprites:
             if not hasattr(sprite, 'current_tile'):
-                sprite.origin_tile = self.grid.get_tile_position((sprite.center_x, sprite.center_y))
+                sprite.origin_tile = self.grid.get_grid_position((sprite.center_x, sprite.center_y))
                 sprite.current_tile = sprite.origin_tile
                 sprite.destination_tile = None
                 sprite.move_start = None
