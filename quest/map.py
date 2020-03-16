@@ -66,8 +66,11 @@ class Map:
             return layers[0]
 
 class TiledMap(Map):
-    """A subclass of Map which loads its layers from a TMX file.
-
+    """A subclass of Map which loads its layers from a TMX file. Each layer has a collection of tiles. 
+    When TiledMap is initialized, a sprite is created for each of these tiles. The sprite's image and
+    position are read from the tile layer data. The sprite's class (which can determine its behavior)
+    can be set using the `sprite_classes` argument. 
+    
     Use TiledMap when you want to design your map using
     [Tiled](https://www.mapeditor.org/). This app saves maps as TMX files.
 
@@ -87,14 +90,18 @@ class TiledMap(Map):
 class MapLayer:
     """
     Each Map is made up of one or more MapLayers. 
-    """
-    sprite_class = QuestSprite
 
+    Arguments:
+        name (str): The layer name. 
+        sprite_list: An optional :py:class:`arcade.SpriteList`.
+    """
     def __init__(self, name, sprite_list=None):
         self.name = name
         self.sprite_list = sprite_list or arcade.SpriteList()
 
     def draw(self):
+        """Renders the layer by calling 
+        """
         self.sprite_list.draw()
 
     def clear(self):
@@ -105,8 +112,24 @@ class MapLayer:
 
 class GridMapLayer(MapLayer):
     """
-    A MapLayer designed for use with GridMap. Makes it easy to add new sprites at particular grid locations.
+    A MapLayer which is aware of grid coordinates. GridMapLayers are useful in situations when you 
+    want to place sprites programmatically. For example, the maze example program generates a maze
+    and then uses a GridMapLayer to place the walls of the maze. 
+    
+    Arguments:
+        name (str): Layer name.
+        columns (int): Number of columns in the grid.
+        rows (int): Number of rows in the grid.
+        pixel_width (int): Width of the grid in pixels.
+        pixel_height (int): Height of the grid in pixels.
+        sprite_filename (str): Path to sprite image file. Only needed if you will be creating sprites
+            on this grid layer.
+        sprite_class: Class of sprites to create on this layer.
+
     """
+
+    sprite_class = QuestSprite
+
     def __init__(self, name, columns, rows, pixel_width, pixel_height, sprite_filename=None, sprite_class=None):
         super().__init__(name)
         self.columns = columns
