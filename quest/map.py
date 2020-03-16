@@ -113,7 +113,9 @@ class MapLayer:
 class GridMapLayer(MapLayer):
     """
     A MapLayer which is aware of grid coordinates. GridMapLayers are useful in situations when you 
-    want to place sprites programmatically. For example, the maze example program generates a maze
+    want to place sprites programmatically. Several methods are provided to support calculations
+    about sprite positions with respect to the grid. This cam be simpler than working in pixel positions. 
+    For example, the maze example program generates a maze
     and then uses a GridMapLayer to place the walls of the maze. 
     
     Arguments:
@@ -140,31 +142,68 @@ class GridMapLayer(MapLayer):
         if sprite_class:
             self.sprite_class = sprite_class
 
-    def add_sprite(self, tile_x, tile_y, sprite=None):
+    def add_sprite(self, grid_x, grid_y, sprite=None):
+        """Adds a sprite at a given grid position.
+
+        Arguments:
+            grid_x (int): The x-coordinate of the grid position 
+            grid_y (int): The y-coordinate of the grid position 
+            sprite (QuestSprite): (Optional) sprite to add to this layer and place at this grid position. If no
+                sprite is given, a new sprite will be created.
+        """
         sprite = sprite or self.create_sprite()
-        sprite.left, sprite.bottom = self.get_pixel_position((tile_x, tile_y))
+        sprite.left, sprite.bottom = self.get_pixel_position((grid_x, grid_y))
         self.sprite_list.append(sprite)
 
     def create_sprite(self):
+        """Creates a sprite with image `self.sprite_filename` and class `self.sprite_class`. 
+        """
         if self.sprite_filename is None:
             raise ValueError("Can't add sprites to GridMapLayer unless sprite_filename is defined.")
         return self.sprite_class(self.sprite_filename)
 
-    def get_pixel_position(self, tile_position, center=True):
-        tile_x, tile_y = tile_position
-        pixel_x = self.pixel_width * (tile_x / self.columns)
-        pixel_y = self.pixel_height * (tile_y / self.rows)
+    def get_pixel_position(self, grid_position, center=True):
+        """Converts pixel coordinates to grid coordinates.
+
+        Arguments:
+            grid_position (int, int): x and y grid coordinates 
+            center (bool): By default, returns the pixel position of the center
+            of the grid tile. When False, returns the pixel position of the lower
+            left corner of the grid tile.
+
+        Returns:
+            (float, float) pixel position.
+        """
+        grid_x, grid_y = grid_position
+        pixel_x = self.pixel_width * (grid_x / self.columns)
+        pixel_y = self.pixel_height * (grid_y / self.rows)
         if center:
             pixel_x += (self.pixel_width / self.columns) / 2
             pixel_y += (self.pixel_height / self.rows) / 2
         return pixel_x, pixel_y
 
-    def get_tile_position(self, pixel_position):
-        pixel_x, pixel_y = pixel_position
-        tile_x = pixel_x // (self.pixel_width / self.columns)
-        tile_y = pixel_y // (self.pixel_height / self.rows)
-        return tile_x, tile_y
+    def get_grid_position(self, pixel_position):
+        """Converts grid position to pixel position. 
 
-    def tile_in_grid(self, tile_position):
-        tile_x, tile_y = tile_position
-        return tile_x >= 0 and tile_x < self.columns and tile_y >= 0 and tile_y < self.rows
+        Any pixel position within a grid tile will be converted to that
+        grid tile's coordinates.
+
+        Arguments: 
+            pixel_position (float, float): x and y pixel coordinates.
+
+        Returns:
+            (float, float) grid position.
+        """
+        pixel_x, pixel_y = pixel_position
+        grid_x = pixel_x // (self.pixel_width / self.columns)
+        grid_y = pixel_y // (self.pixel_height / self.rows)
+        return grid_x, grid_y
+
+    def position_in_grid(self, grid_position):
+        """Returns whether or not `grid_position` is within the grid.
+
+        Arguments:
+            grid_position (int, int): x and y grid coordinates 
+        """
+        grid_x, grid_y = grid_position
+        return grid_x >= 0 and grid_x < self.columns and grid_y >= 0 and grid_y < self.rows
