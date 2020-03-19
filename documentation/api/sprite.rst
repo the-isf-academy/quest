@@ -1,5 +1,5 @@
-Sprites
-=======
+Sprite
+======
 
 .. automodule:: quest.sprite
    :members:
