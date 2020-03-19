@@ -8,7 +8,7 @@ class QuestSprite(Sprite):
     A :py:class:`QuestSprite` is a subclass of :py:class:`arcade.Sprite` with a 
     few additional methods to help integrate into the Quest framework. 
 
-    Properties:
+    Attributes:
         description: A string description of the sprite.
         strategy: If set, should be a :py:class:`quest.strategy.Strategy`, or another class 
             instance with a :py:meth:`choose_course` method. 
@@ -27,7 +27,14 @@ class QuestSprite(Sprite):
 
         Normally, sprites' intended movement is set using the `change_x` and `change_y` 
         properties. This method updates `change_x` and `change_y` based on an (x, y) vector
-        whose magnitude is scaled to the sprite's speed.
+        whose magnitude is scaled to the sprite's speed. This is helpful when you have an 
+        (x, y) vector, for example a :py:class:`quest.helpers.Direction` or a vector to another
+        sprite, and want to have this sprite head that direction at its speed. For example, if you wanted
+        a sprite to always try to move down at its speed::
+        
+                def on_update(self):
+                    self.set_course(Direction.DOWN.to_vector())
+
         """
         vx, vy = scale(vector, self.speed)
         self.change_x = vx
