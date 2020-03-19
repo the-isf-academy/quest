@@ -84,7 +84,7 @@ class GrandmasSoupGame(QuestGame):
             self.npc_list.append(sprite)
 
         grandma = self.npc_list[0]
-        walk = RandomWalk()
+        walk = RandomWalk(0.05)
         grandma.strategy = walk
 
     def talk_with_grandma(self):
@@ -115,7 +115,7 @@ class Grandma(NPC):
             closed, it would immediately reopen. Grandma is interesting, but not that 
             interesting.
     """
-    repel_distance = 10
+    repel_distance = 20
 
     def on_collision(self, sprite, game):
         """When the player collides with Grandma, she repels the player and then 

@@ -1,16 +1,28 @@
 import arcade
-from arcade.sprite_list import SpriteList
-from arcade.physics_engines import PhysicsEngineSimple
+from arcade.sprite_list import SpriteList, _check_for_collision
 from arcade import check_for_collision_with_list
-from itertools import chain
+from itertools import chain, combinations
 from collections import defaultdict
 from easing_functions import LinearInOut
-from quest.helpers import Direction, SpriteListList
+from quest.helpers import Direction, SpriteListList, scale
 from time import time
 from math import sqrt
 
 class QuestPhysicsEngine:
     """Base class for Quest Physics Engines
+
+    The engine is initialized with a :py:class:`QuestGame` instance, which 
+    the engine uses to access sprites. Quest's physics engines make some assumptions
+    about the structure of a game in order to simplify logic. It is assumed that the
+    game has attributes `player_list`, `wall_list`, and `npc_list`. Players and NPCs will 
+    be moved according to their `change_x` and `change_y` attributes; walls will not move. 
+    When players or NPCs collide with walls, they are pushed back until they are no longer
+    colliding. When players or NPCs collide with each other, their `on_collision` methods
+    are called, but they are not automatically repelled. If you want players or NPCs to be
+    repelled from each other, see :py:class:`quest.examples.grandmas_soup.Grandma`.
+
+    Args:
+        game (QuestGame): The game to which the engine will be attached.
     """
     def __init__(self, game):
         self.game = game
@@ -26,20 +38,65 @@ class QuestPhysicsEngine:
 
 class ContinuousPhysicsEngine(QuestPhysicsEngine):
     """A continuous physics engine allows sprites to be at any point.
+
+    This implementation is simple but inefficient. It may be problematic with 
+    more complex games. If we run into trouble, first try using spatial hashes
+    to resolve collisions.
     """
     def __init__(self, game):
         super().__init__(game)
-        self.internal_engine = PhysicsEngineSimple(self.player(), self.wall_list)
+        self.non_wall_list = SpriteListList([self.player_list, self.npc_list])
 
     def update(self):
-        wall_collisions = self.internal_engine.update()
-        for wall in wall_collisions:
-            self.player().on_collision(wall, self.game)
-            wall.on_collision(self.player(), self.game)
-        npc_collisions = check_for_collision_with_list(self.player(), self.npc_list)
-        for npc in npc_collisions:
-            self.player().on_collision(npc, self.game)
-            npc.on_collision(self.player(), self.game)
+        """Updates sprite positions and handles collisions.
+        """
+        self.update_sprite_positions()
+        self.resolve_collisions_with_walls()
+        self.resolve_collisions_between_nonwalls()
+
+    def update_sprite_positions(self):
+        """Updates sprite positions using their `change_x` and `change_y` attributes.
+        """
+        for moving_sprite in self.non_wall_list:
+            moving_sprite.center_x += moving_sprite.change_x
+            moving_sprite.center_y += moving_sprite.change_y
+
+    def resolve_collisions_with_walls(self):
+        """Resolves collisions between every sprite and every wall.
+        """
+        for moving_sprite in self.non_wall_list:
+            if moving_sprite.change_x == 0 and moving_sprite.change_y == 0:
+                continue
+            wall_collisions = check_for_collision_with_list(moving_sprite, self.wall_list)
+            for wall in wall_collisions:
+                moving_sprite.on_collision(wall, self.game)
+                wall.on_collision(moving_sprite, self.game)
+                self.resolve_sprite_wall_collision(moving_sprite, wall)
+
+    def resolve_sprite_wall_collision(self, sprite, wall):
+        """Stops the sprite and backs it away from the wall until they are no longer colliding.
+        
+        The distance by which the sprite backs up doubles until they are no longer colliding.
+        Note that this does not handle the case in which backing away from one wall means
+        it hits another wall (e.g. in a narrow passageway). This will be handled on the subsequent
+        update. We can write more complex code if it becomes necessary.
+        """
+        sprite.stop()
+        repel_distance = 1
+        away = (wall.center_x - sprite.center_x, wall.center_y - sprite.center_y)
+        while _check_for_collision(sprite, wall):
+            away_x, away_y = scale(away, repel_distance)
+            sprite.center_x = sprite.center_x - away_x
+            sprite.center_y = sprite.center_y - away_y
+            repel_distance *= 2
+
+    def resolve_collisions_between_nonwalls(self):
+        """For every pair of nonwall sprites, resolves collisions.
+        """
+        for sprite0, sprite1 in combinations(self.non_wall_list, 2):
+            if _check_for_collision(sprite0, sprite1):
+                sprite0.on_collision(sprite1, self.game)
+                sprite1.on_collision(sprite0, self.game)
 
 class DiscretePhysicsEngine(QuestPhysicsEngine):
     """A physics engine which snaps sprite movement to specific gridpoints.
