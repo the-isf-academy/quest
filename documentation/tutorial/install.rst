@@ -1,5 +1,5 @@
-Intallation
-===========
+Installation
+============
 
 Quest is distributed on PyPI, so that you can install it with pip
 ::
