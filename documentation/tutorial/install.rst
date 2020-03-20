@@ -9,7 +9,7 @@ Quest is distributed on PyPI, so that you can install it with pip
 However, if you are using quest for class you might need to look at and edit its files. In this case, 
 you want to install an editable copy of Quest::
 
-    $ git clone https://github.com/cproctor/quest.git
+    $ git clone https://github.com/the-isf-academy/quest.git
     $ pip install --editable quest
     $ python -m quest.examples.island
    

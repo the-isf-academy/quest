@@ -9,6 +9,7 @@ This section of the documentation explains each class and function in the Quest 
    game
    map
    sprite
+   strategy
    maze
    modal
    dialogue

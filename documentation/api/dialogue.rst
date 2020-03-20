@@ -22,7 +22,7 @@ and what happens when each response is given. That data structure looks like thi
         "FRIENDS": {
             "content": [
                 "Oh, of course.",
-                "I didn't recognize you with that wig.
+                "I didn't recognize you with that wig."
             ],
             "options": {
                 "Do you like it? It's new.": "WIG",
