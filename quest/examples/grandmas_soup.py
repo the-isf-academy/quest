@@ -2,7 +2,7 @@ from quest.game import QuestGame
 from quest.map import TiledMap
 from quest.dialogue import Dialogue
 from quest.modal import Modal, DialogueModal
-from quest.sprite import QuestSprite, Wall, NPC
+from quest.sprite import QuestSprite, Player, Wall, NPC
 from quest.helpers import scale
 from quest.strategy import RandomWalk
 import arcade
@@ -122,7 +122,8 @@ class Grandma(NPC):
         :py:meth:`talk_with_grandma` is called to open the dialogue modal.
         """
         self.repel(sprite)
-        game.talk_with_grandma()
+        if isinstance(sprite, Player):
+            game.talk_with_grandma()
 
     def repel(self, sprite):
         "Backs the sprite away from self"
