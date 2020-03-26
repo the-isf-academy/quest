@@ -77,15 +77,6 @@ class TestExampleGames(unittest.TestCase):
                     self.longMessage = False
                     self.assertEqual(completed_run.returncode, 0, "Error while running {}\n{}".format(example, completed_run.stderr))
 
-class TestExampleGamesHeadless(TestExampleGames):
-
-    def setUp(self):
-        super().setUp()
-
-        # create a dummy display to avoid errors in autotesting on headless Ubuntu
-        self.xvfb = Xvfb(width=1280, height=720)
-        self.addCleanup(self.xvfb.stop)
-        self.xvfb.start()
 
 if __name__ == '__main__':
     unittest.main()
