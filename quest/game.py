@@ -6,15 +6,15 @@ from quest.sprite import Player
 class QuestGame(arcade.Window):
     """Implements a top-down video game with a character on a map.
 
-    :py:class:`QuestGame` is the central class in the :doc:`../index`, 
-    which is built on top of :doc:`arcade:index`. :py:class:`QuestGame` 
+    :py:class:`QuestGame` is the central class in the :doc:`../index`,
+    which is built on top of :doc:`arcade:index`. :py:class:`QuestGame`
     is a subclass of :py:class:`arcade:arcade.Window`.
     To create your own game, create a subclass of :py:class:`QuestGame`
-    and then override whatever you need to change from the default behavior. 
+    and then override whatever you need to change from the default behavior.
 
     When :py:class:`QuestGame` is initialized, it sets up the player, the maps,
     the walls, the NPCs, the physics engine, and centers the viewport on the player.
-    Rather than overriding :py:meth:`__init__`, consider overriding just the setup 
+    Rather than overriding :py:meth:`__init__`, consider overriding just the setup
     functions you need to change.
 
     Attributes:
@@ -53,8 +53,8 @@ class QuestGame(arcade.Window):
     view_bottom = 0
     view_left = 0
 
-    def __init__(self):
-        """Initializes the game window and sets up other classes. 
+    def __init__(self, game_name="my_game"):
+        """Initializes the game window and sets up other classes.
         """
         super().__init__(self.screen_width, self.screen_height, self.screen_title)
         self.running = False
@@ -77,9 +77,9 @@ class QuestGame(arcade.Window):
     def setup_maps(self):
         """Sets up the game maps.
 
-        self.maps should be assigned to a list of :py:class:`Map` objects, which get 
+        self.maps should be assigned to a list of :py:class:`Map` objects, which get
         initialized here. Each map represents a 'level' or 'scene' of the game.
-        Once the list of maps is created, use :py:meth:`set_current_map` to 
+        Once the list of maps is created, use :py:meth:`set_current_map` to
         set one of the maps as the initial current map.
         This method will need to be overridden by any game using a map.
         For more details, see :ref:`creating_maps`
@@ -90,7 +90,7 @@ class QuestGame(arcade.Window):
         """Creates the player sprite.
 
         Initializes a sprite for the player, assigns its starting position,
-        and appends the player sprite to a SpriteList (Arcade likes to work 
+        and appends the player sprite to a SpriteList (Arcade likes to work
         with sprites in SpriteLists).
         """
         self.player = Player(self.player_sprite_image, self.player_scaling)
@@ -146,18 +146,18 @@ class QuestGame(arcade.Window):
     def setup_physics_engine(self):
         """Sets up the physics engine.
 
-        Initializes the physics engine that will be used in the game. 
-        A physics engine resolves interactions between sprites according to a 
-        set of rules. The :doc:`arcade:index` :py:class:`arcade:PhysicsEngineSimple` 
-        just keeps the player sprite from bumping into walls. More complicated 
-        physics engines could implement collisions, gravity, or even realistic 
-        3-dimensional interactions. 
+        Initializes the physics engine that will be used in the game.
+        A physics engine resolves interactions between sprites according to a
+        set of rules. The :doc:`arcade:index` :py:class:`arcade:PhysicsEngineSimple`
+        just keeps the player sprite from bumping into walls. More complicated
+        physics engines could implement collisions, gravity, or even realistic
+        3-dimensional interactions.
 
-        By default, :py:class:`QuestGame` uses :py:class:`arcade:PhysicsEngineSimple` 
-        to prevent the player sprite from colliding or passing through any 
-        sprites on a map layer with the ``wall`` role. If there are no 
-        :py:class:`MapLayer` with the ``wall`` role, uses the 
-        :py:class:`NullPhysicsEngine` instead. Don't override this method 
+        By default, :py:class:`QuestGame` uses :py:class:`arcade:PhysicsEngineSimple`
+        to prevent the player sprite from colliding or passing through any
+        sprites on a map layer with the ``wall`` role. If there are no
+        :py:class:`MapLayer` with the ``wall`` role, uses the
+        :py:class:`NullPhysicsEngine` instead. Don't override this method
         unless you understand Arcade's physics engines pretty well.
         """
         self.physics_engine = ContinuousPhysicsEngine(self)
@@ -165,9 +165,9 @@ class QuestGame(arcade.Window):
     def on_update(self, delta_time):
         """Updates the game's state.
 
-        At every tick, the game needs to be updated. The physics engine 
+        At every tick, the game needs to be updated. The physics engine
         updates sprite positions, and then sprite callbacks are executed.
-        Finally, the viewport is scrolled. Note that `on_update` changes the 
+        Finally, the viewport is scrolled. Note that `on_update` changes the
         state of the game, but does not draw anything to the screen.
 
         Args:
@@ -180,11 +180,11 @@ class QuestGame(arcade.Window):
             self.scroll_viewport()
 
     def on_draw(self):
-        """Draws the screen. 
+        """Draws the screen.
 
-        At every tick, just after `on_update`, the whole screen needs to be 
-        redrawn. This involves drawing the background color, each map layer 
-        with the `display` role, the NPC's, the player, and any message that 
+        At every tick, just after `on_update`, the whole screen needs to be
+        redrawn. This involves drawing the background color, each map layer
+        with the `display` role, the NPC's, the player, and any message that
         needs to be displayed.
         """
         arcade.start_render()
@@ -215,7 +215,7 @@ class QuestGame(arcade.Window):
         """
         self.current_modal = None
         self.running = True
-    
+
     def on_key_press(self, key, modifiers):
         """Handles key presses.
 
@@ -225,9 +225,9 @@ class QuestGame(arcade.Window):
 
         While a key is pressed, the sprite's x- and y- change values are set
         to the player's movement speed. Think of this as an intention to move;
-        it's up to the physics engine to decide whether this actually 
-        results in movement. For example, the physics engine will prevent 
-        players from moving into walls. This method is automatically called at 
+        it's up to the physics engine to decide whether this actually
+        results in movement. For example, the physics engine will prevent
+        players from moving into walls. This method is automatically called at
         the appropriate time.
         """
         if self.current_modal:
@@ -249,7 +249,7 @@ class QuestGame(arcade.Window):
             key: The key that was released.
             modifiers: A list of currently-active modifier keys (e.g. shift).
 
-        Whenever a key is released, the player's change_x or change_y 
+        Whenever a key is released, the player's change_x or change_y
         is set to 0, indicating that the player no longer intends to keep
         moving. This method is automatically called at the appropriate time.
         """
@@ -277,12 +277,12 @@ class QuestGame(arcade.Window):
         """Updates the viewport to keep the player within margins.
 
         If the player sprite is too close to any edge of the viewport
-        (or has somehow gone beyond the viewport), scrolls the viewport 
-        to the player. The {left, right, bottom, top}_viewport_margin 
-        properties specify how close the player is allowed to be to the 
+        (or has somehow gone beyond the viewport), scrolls the viewport
+        to the player. The {left, right, bottom, top}_viewport_margin
+        properties specify how close the player is allowed to be to the
         edge before scrolling.
         """
-    
+
         changed = False
 
         left_boundary = self.view_left + self.left_viewport_margin
@@ -314,7 +314,7 @@ class QuestGame(arcade.Window):
         """Updates the viewport.
 
         Uses the `view_left`, `view_bottom`, and the screen size
-        properties to update the viewport. Needs to be called after 
+        properties to update the viewport. Needs to be called after
         changing any of these properties.
         """
         arcade.set_viewport(
@@ -327,7 +327,7 @@ class QuestGame(arcade.Window):
     def message(self):
         """Generates a message (or no message) to be shown on screen.
 
-        Returns: 
+        Returns:
             A string to be shown on screen, or None if no message is needed.
         """
         return None
