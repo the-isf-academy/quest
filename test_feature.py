@@ -26,6 +26,8 @@ import sys, io
 import subprocess
 import os
 import glob
+from xvfbwrapper import Xvfb
+
 
 EXAMPLE_SUBDIR = "quest/examples/"
 
@@ -50,7 +52,6 @@ class TestExampleGames(unittest.TestCase):
         os.chdir(file_path)
 
         os.environ['ARCADE_TEST'] = "TRUE"
-
         self.indices_in_range = None
         self.index_skip_list = None
         self.examples = _get_examples(EXAMPLE_SUBDIR)
@@ -75,6 +76,16 @@ class TestExampleGames(unittest.TestCase):
                     completed_run = subprocess.run(cmd, shell=True, capture_output=True, text=True)
                     self.longMessage = False
                     self.assertEqual(completed_run.returncode, 0, "Error while running {}\n{}".format(example, completed_run.stderr))
+
+class TestExampleGamesHeadless(TestExampleGames):
+
+    def setUp(self):
+        super().setUp()
+
+        # create a dummy display to avoid errors in autotesting on headless Ubuntu
+        self.xvfb = Xvfb(width=1280, height=720)
+        self.addCleanup(self.xvfb.stop)
+        self.xvfb.start()
 
 if __name__ == '__main__':
     unittest.main()

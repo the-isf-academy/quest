@@ -23,5 +23,6 @@ setuptools.setup(
         "numpy>=1.17.4",
         "Pillow>=6.2.1",
         "tqdm>=4.42.1",
+        "xvfbwrapper>=0.2.9",
     ]
 )
