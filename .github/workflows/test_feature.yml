@@ -38,7 +38,7 @@ jobs:
 #   - name: test_example_games_headless
 #      run: |
 #        xvfb-run python test_feature.py
-#    - name: Actions for Discord
+    - name: Actions for Discord
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@0.0.2
