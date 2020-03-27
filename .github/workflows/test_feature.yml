@@ -43,4 +43,4 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@0.0.2
       with:
-        args: '{{ GITHUB_ACTOR }} made a pull request in {{ GITHUB_REPOSITORY }}. Test status: ${{job.status}}'
+        args: '{{ job.GITHUB_ACTOR }} made a pull request in {{ job.GITHUB_REPOSITORY }}. Test status: ${{job.status}}'
