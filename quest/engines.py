@@ -11,27 +11,55 @@ from math import sqrt
 class QuestPhysicsEngine:
     """Base class for Quest Physics Engines
 
-    The engine is initialized with a :py:class:`QuestGame` instance, which 
+    The engine is initialized with a :py:class:`QuestGame` instance, which
     the engine uses to access sprites. Quest's physics engines make some assumptions
     about the structure of a game in order to simplify logic. It is assumed that the
-    game has attributes `player_list`, `wall_list`, and `npc_list`. Players and NPCs will 
-    be moved according to their `change_x` and `change_y` attributes; walls will not move. 
+    game has attributes `player_list`, `wall_list`, and `npc_list`. Players and NPCs will
+    be moved according to their `change_x` and `change_y` attributes; walls will not move.
     When players or NPCs collide with walls, they are pushed back until they are no longer
     colliding. When players or NPCs collide with each other, their `on_collision` methods
     are called, but they are not automatically repelled. If you want players or NPCs to be
-    repelled from each other, see :py:class:`quest.examples.grandmas_soup.Grandma`.
+    repelled from each other, see :py:class:`quest.examples.grandmas_soup.Grandma`. Time-based
+    updates are optionally implemented using the argument `time` which defaults to False.
 
     Args:
         game (QuestGame): The game to which the engine will be attached.
     """
-    def __init__(self, game):
+    max_darkness = 100
+
+    def __init__(self, game, time=False, time_cycle_secs=30):
         self.game = game
         self.player_list=game.player_list
         self.wall_list=game.wall_list
         self.npc_list=game.npc_list
+        all_sprite_lists = [self.player_list, self.wall_list, self.npc_list]
+        curr_map = self.game.get_current_map()
+        for layer in curr_map.layers:
+            all_sprite_lists.append(layer.sprite_list)
+        self.all_sprites = SpriteListList(all_sprite_lists)
+        self.time = time
+        self.time_cycle_secs = time_cycle_secs
 
     def update(self, game):
-        pass
+        """Updates game based on time the game has run if the time option is set. Otherwise,
+        waits for implementation from a more complex physics engine like py:class:`ContinuousPhysicsEngine`
+        """
+        if self.time:
+            self.time_updates()
+
+    def time_updates(self):
+        self.update_sprites_for_time()
+
+    def update_sprites_for_time(self):
+        """Calculates shade by converting the time passed since the start of the game to a percentage
+        of the current day/night cycle.
+        """
+        time_since_start = time()-self.game.start_time
+        curr_mod = time_since_start%self.time_cycle_secs
+        grade = abs(curr_mod - self.time_cycle_secs/2) / (self.time_cycle_secs/2)
+        color_value = grade*(255-self.max_darkness) + self.max_darkness
+        for sprite in self.all_sprites:
+            sprite.color = (color_value, color_value, color_value)
 
     def player(self):
         return self.player_list.sprite_list[0]
@@ -39,17 +67,18 @@ class QuestPhysicsEngine:
 class ContinuousPhysicsEngine(QuestPhysicsEngine):
     """A continuous physics engine allows sprites to be at any point.
 
-    This implementation is simple but inefficient. It may be problematic with 
+    This implementation is simple but inefficient. It may be problematic with
     more complex games. If we run into trouble, first try using spatial hashes
     to resolve collisions.
     """
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, game, **kwargs):
+        super().__init__(game, **kwargs)
         self.non_wall_list = SpriteListList([self.player_list, self.npc_list])
 
     def update(self):
         """Updates sprite positions and handles collisions.
         """
+        super().update(self.game)
         self.update_sprite_positions()
         self.resolve_collisions_with_walls()
         self.resolve_collisions_between_nonwalls()
@@ -75,7 +104,7 @@ class ContinuousPhysicsEngine(QuestPhysicsEngine):
 
     def resolve_sprite_wall_collision(self, sprite, wall):
         """Stops the sprite and backs it away from the wall until they are no longer colliding.
-        
+
         The distance by which the sprite backs up doubles until they are no longer colliding.
         Note that this does not handle the case in which backing away from one wall means
         it hits another wall (e.g. in a narrow passageway). This will be handled on the subsequent
@@ -101,9 +130,9 @@ class ContinuousPhysicsEngine(QuestPhysicsEngine):
 class DiscretePhysicsEngine(QuestPhysicsEngine):
     """A physics engine which snaps sprite movement to specific gridpoints.
 
-    Some games work better when sprites occupy specific tiles, rather than 
-    having continuous positions. This can make it easier to think about 
-    relationships between sprites (for example, to calculate which are 
+    Some games work better when sprites occupy specific tiles, rather than
+    having continuous positions. This can make it easier to think about
+    relationships between sprites (for example, to calculate which are
     adjacent, or to plan a route). :py:class:`DiscretePhysicsEngine` handles
     sprite movement in a discrete way, while animating sprites' transitions
     from tile to tile.
@@ -111,33 +140,34 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
     Args:
         player_sprite (arcade.Sprite):
         dynamic_sprite_lists (bool): Whether new sprites might be added
-            to sprite lists during the game. Performance is better when 
+            to sprite lists during the game. Performance is better when
             False. Default True.
 
     Attributes:
         tile_transition_cutoff (float): Parametric t value at which a sprite's
-            current tile should shift to the 
-        
+            current tile should shift to the
+
     """
-    
+
     tile_transition_cutoff = 0.5
     easing_class = LinearInOut
-    
-    def __init__(self, game, grid_map_layer, diagonal=True, check_for_new_sprites=True):
-        super().__init__(game)
+
+    def __init__(self, game, grid_map_layer, diagonal=True, check_for_new_sprites=True, **kwargs):
+        super().__init__(game, **kwargs)
         self.grid = grid_map_layer
         self.diagonal = diagonal
         self.easing = self.easing_class()
         self.check_for_new_sprites = check_for_new_sprites
         sprite_lists = [self.player_list, self.wall_list, self.npc_list]
-        self.all_sprites = SpriteListList(sprite_lists)
+        self.all_nonbackground_sprites = SpriteListList(sprite_lists)
         self.dynamic_sprites = SpriteListList([l for l in sprite_lists if not l.is_static])
         self.ensure_sprite_metadata(all_sprites=True)
         self.tile_positions = defaultdict(list)
-        for sprite in self.all_sprites:
+        for sprite in self.all_nonbackground_sprites:
             self.tile_positions[sprite.current_tile].append(sprite)
-        
+
     def update(self):
+        super().update(self.game)
         if self.check_for_new_sprites:
             self.ensure_sprite_metadata()
         for sprite in self.dynamic_sprites:
@@ -145,7 +175,7 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
                 self.begin_move(sprite)
             elif sprite.moving:
                 self.continue_move(sprite)
-                
+
     def begin_move(self, sprite):
         direction = Direction.from_vector((sprite.change_x, sprite.change_y), self.diagonal)
         ox, oy = sprite.origin_tile
@@ -200,7 +230,7 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         return self.easing.ease(x)
 
     def ensure_sprite_metadata(self, all_sprites=False):
-        sprites = self.all_sprites if all_sprites else self.dynamic_sprites
+        sprites = self.all_nonbackground_sprites if all_sprites else self.dynamic_sprites
         for sprite in sprites:
             if not hasattr(sprite, 'current_tile'):
                 sprite.origin_tile = self.grid.get_grid_position((sprite.center_x, sprite.center_y))

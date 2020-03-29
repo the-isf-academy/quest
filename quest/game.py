@@ -2,6 +2,8 @@ import arcade
 from quest.engines import ContinuousPhysicsEngine
 from quest.errors import NoMapError, NoLayerError
 from quest.sprite import Player
+from time import time
+
 
 class QuestGame(arcade.Window):
     """Implements a top-down video game with a character on a map.
@@ -53,7 +55,7 @@ class QuestGame(arcade.Window):
     view_bottom = 0
     view_left = 0
 
-    def __init__(self, game_name="my_game"):
+    def __init__(self):
         """Initializes the game window and sets up other classes.
         """
         super().__init__(self.screen_width, self.screen_height, self.screen_title)
@@ -71,6 +73,7 @@ class QuestGame(arcade.Window):
     def run(self):
         """Starts the game.
         """
+        self.start_time = time()
         self.running = True
         arcade.run()
 
