@@ -49,18 +49,17 @@ class IslandAdventureDiscrete(QuestGame):
         """Uses :py:class:`DiscretePhysicsEngine` instead of the standard :py:class:`ContinuousPhysicsEngine`.
         The result is that the player snaps to a grid instead of moving smoothly to any position.
 
-        A game's physics engine is responsible for enforcing the rules of the game's reality. 
-        In a fancy 3d game, the physics engine is full of intense math to keep track of objects 
-        flying around, bouncing off of walls, and breaking into pieces. 
-    
+        A game's physics engine is responsible for enforcing the rules of the game's reality.
+        In a fancy 3d game, the physics engine is full of intense math to keep track of objects
+        flying around, bouncing off of walls, and breaking into pieces.
+
         Quest's physics engines are simpler. They just need to make sure nobody walks through walls,
         and to check when sprites collide. There are two physics engines built-in: A continuous (the
-        default) and a discrete (used here). 
+        default) and a discrete (used here).
         """
         grid = self.get_current_map().get_layer_by_name('grid')
         self.physics_engine = DiscretePhysicsEngine(self, grid)
-        
+
 if __name__ == '__main__':
     game = IslandAdventureDiscrete()
     game.run()
-
