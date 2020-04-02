@@ -6,14 +6,12 @@ import os
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Face Left or Right Example"
-
 MOVEMENT_SPEED = 5
 
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
+TEXTURE_UP=2
+TEXTURE_DOWN=3
 
 #Code by Paul Vincent Craven
 class Player(arcade.Sprite):
@@ -28,21 +26,29 @@ class Player(arcade.Sprite):
         self.textures.append(texture)
         texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
         self.textures.append(texture)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png")
+        self.textures.append(texture)
+        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
+        self.textures.append(texture)
 
         self.scale = SPRITE_SCALING
 
-        # By default, face right.
-        self.set_texture(TEXTURE_RIGHT)
+        # By default, face down.
+        self.set_texture(TEXTURE_DOWN)
 
     def update(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
-        # Figure out if we should face left or right
+        # Figure out which direction we should face
         if self.change_x < 0:
             self.texture = self.textures[TEXTURE_LEFT]
         elif self.change_x > 0:
             self.texture = self.textures[TEXTURE_RIGHT]
+        if self.change_y > 0:
+            self.texture = self.textures[TEXTURE_UP]
+        elif self.change_y < 0:
+            self.texture = self.textures[TEXTURE_DOWN]
 
         if self.left < 0:
             self.left = 0
@@ -83,19 +89,7 @@ class MyGame(arcade.Window):
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
-    def setup(self):
-        """ Set up the game and initialize the variables. """
-
-        # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
-
-        # Set up the player
-        self.player_sprite = Player()
-        self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
-        self.all_sprites_list.append(self.player_sprite)
-
+        
     def on_draw(self):
         """
         Render the screen.
