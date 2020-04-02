@@ -2,7 +2,7 @@
 name: Resource request
 about: Request a resource explaining some element of the Quest framework
 title: ''
-labels: resource_request, documentation
+labels: resource request, documentation
 assignees: ''
 
 ---
