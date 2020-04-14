@@ -14,122 +14,126 @@ TEXTURE_UP=2
 TEXTURE_DOWN=3
 
 #Code by Paul Vincent Craven
-class Player(arcade.Sprite):
+"""
+    class Player(arcade.Sprite):
 
-    def __init__(self):
-        super().__init__()
+        def __init__(self):
+            super().__init__()
 
-        self.textures = []
-        # Load a left facing texture and a right facing texture.
-        # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
-        self.textures.append(texture)
+            self.textures = []
+            # Load a left facing texture and a right facing texture.
+            # mirrored=True will mirror the image we load.
+            texture = arcade.load_texture(":resources:images/enemies/bee.png")
+            self.textures.append(texture)
+            texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
+            self.textures.append(texture)
+            texture = arcade.load_texture(":resources:images/enemies/bee.png")
+            self.textures.append(texture)
+            texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
+            self.textures.append(texture)
 
-        self.scale = SPRITE_SCALING
+            self.scale = SPRITE_SCALING
 
-        # By default, face down.
-        self.set_texture(TEXTURE_DOWN)
+            # By default, face right.
+            self.set_texture(TEXTURE_RIGHT)
 
-    def update(self):
-        self.center_x += self.change_x
-        self.center_y += self.change_y
+        def update(self):
+            self.center_x += self.change_x
+            self.center_y += self.change_y
 
-        # Figure out which direction we should face
-        if self.change_x < 0:
-            self.texture = self.textures[TEXTURE_LEFT]
-        elif self.change_x > 0:
-            self.texture = self.textures[TEXTURE_RIGHT]
-        if self.change_y > 0:
-            self.texture = self.textures[TEXTURE_UP]
-        elif self.change_y < 0:
-            self.texture = self.textures[TEXTURE_DOWN]
+            # Figure out if we should face left or right
+            if self.change_x < 0:
+                self.texture = self.textures[TEXTURE_LEFT]
+            elif self.change_x > 0:
+                self.texture = self.textures[TEXTURE_RIGHT]
 
-        if self.left < 0:
-            self.left = 0
-        elif self.right > SCREEN_WIDTH - 1:
-            self.right = SCREEN_WIDTH - 1
+            if self.left < 0:
+                self.left = 0
+            elif self.right > SCREEN_WIDTH - 1:
+                self.right = SCREEN_WIDTH - 1
 
-        if self.bottom < 0:
-            self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
+            if self.bottom < 0:
+                self.bottom = 0
+            elif self.top > SCREEN_HEIGHT - 1:
+                self.top = SCREEN_HEIGHT - 1
 
 
-class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
+    class MyGame(arcade.Window):
 
-    def __init__(self, width, height, title):
-        """
-        Initializer
-        """
+        Main application class.
 
-        # Call the parent class initializer
-        super().__init__(width, height, title)
 
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        def __init__(self, width, height, title):
 
-        # Variables that will hold sprite lists
-        self.all_sprites_list = None
+            #Initializer
 
-        # Set up the player info
-        self.player_sprite = None
 
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
-        
-    def on_draw(self):
-        """
-        Render the screen.
-        """
+            # Call the parent class initializer
+            super().__init__(width, height, title)
 
-        # This command has to happen before we start drawing
-        arcade.start_render()
+            # Set the working directory (where we expect to find files) to the same
+            # directory this .py file is in. You can leave this out of your own
+            # code, but it is needed to easily run the examples using "python -m"
+            # as mentioned at the top of this program.
+            file_path = os.path.dirname(os.path.abspath(__file__))
+            os.chdir(file_path)
 
-        # Draw all the sprites.
-        self.all_sprites_list.draw()
+            # Variables that will hold sprite lists
+            self.all_sprites_list = None
 
-    def on_update(self, delta_time):
-        """ Movement and game logic """
+            # Set up the player info
+            self.player_sprite = None
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        self.all_sprites_list.update()
+            # Set the background color
+            arcade.set_background_color(arcade.color.AMAZON)
 
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        def setup(self):
+            #Set up the game and initialize the variables.
 
-        if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
+            # Sprite lists
+            self.all_sprites_list = arcade.SpriteList()
 
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+            # Set up the player
+            self.player_sprite = Player()
+            self.player_sprite.center_x = SCREEN_WIDTH / 2
+            self.player_sprite.center_y = SCREEN_HEIGHT / 2
+            self.all_sprites_list.append(self.player_sprite)
 
-        if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
+        def on_draw(self):
+
+            #Render the screen.
+
+
+            # This command has to happen before we start drawing
+            arcade.start_render()
+
+            # Draw all the sprites.
+            self.all_sprites_list.draw()
+
+        def on_key_press(self, key, modifiers):
+            #Called whenever a key is pressed.
+
+            if key == arcade.key.UP:
+                self.player_sprite.change_y = MOVEMENT_SPEED
+            elif key == arcade.key.DOWN:
+                self.player_sprite.change_y = -MOVEMENT_SPEED
+            elif key == arcade.key.LEFT:
+                self.player_sprite.change_x = -MOVEMENT_SPEED
+            elif key == arcade.key.RIGHT:
+                self.player_sprite.change_x = MOVEMENT_SPEED
+
+        def on_key_release(self, key, modifiers):
+            #Called when the user releases a key.
+
+            if key == arcade.key.UP or key == arcade.key.DOWN:
+                self.player_sprite.change_y = 0
+            elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+                self.player_sprite.change_x = 0
+"""
+
 
 class QuestSprite(Sprite):
-    """The base class for sprites in Quest.
+    he base class for sprites in Quest.
 
     A :py:class:`QuestSprite` is a subclass of :py:class:`arcade.Sprite` with a
     few additional methods to help integrate into the Quest framework.
@@ -188,6 +192,8 @@ class QuestSprite(Sprite):
         By default, if the sprite has a strategy, it uses the strategy
         to set its course.
         """
+        self.all_sprites_list.update()
+
         if self.strategy:
             self.set_course(self.strategy.choose_course(self, game))
 
