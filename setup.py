@@ -3,7 +3,7 @@ from pathlib import Path
 
 setuptools.setup(
     name="questgame",
-    version="0.1.3",
+    version="0.1.4",
     author="Chris Proctor",
     author_email="chris@chrisproctor.net",
     description="A simple game framework",
