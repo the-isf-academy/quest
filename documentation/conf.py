@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Quest Game Framework'
-copyright = '2020, Chris Proctor'
+copyright = '2020, Fablearn'
 author = 'Chris Proctor'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = '0.1.2'
 
 
 # -- General configuration ---------------------------------------------------
