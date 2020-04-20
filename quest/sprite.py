@@ -13,7 +13,6 @@ TEXTURE_RIGHT = 1
 TEXTURE_UP=2
 TEXTURE_DOWN=3
 
-
 #Code by Paul Vincent Craven
 class Player(arcade.Sprite):
 
@@ -149,7 +148,7 @@ class QuestSprite(Sprite):
     Arguments:
         filename: The only required argument is the name of the sprite's image file.
         kwargs: There are many optional keyword arguments inherited from :py:class:`arcade.Sprite`.
-    
+
     description = "quest sprite"
     strategy = None
     speed = 1
