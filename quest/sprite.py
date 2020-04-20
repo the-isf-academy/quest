@@ -14,7 +14,7 @@ TEXTURE_UP=2
 TEXTURE_DOWN=3
 
 #Code by Paul Vincent Craven
-"""
+
     class Player(arcade.Sprite):
 
         def __init__(self):
@@ -139,7 +139,7 @@ TEXTURE_DOWN=3
                 self.player_sprite.change_y = 0
             elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
                 self.player_sprite.change_x = 0
-"""
+
 
 
 class QuestSprite(Sprite):
@@ -230,3 +230,6 @@ class Background(QuestSprite):
     """A sprite that does nothing.
     """
     description = "background"
+
+class Boat(Player):
+    
