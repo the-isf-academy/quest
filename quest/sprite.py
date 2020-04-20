@@ -24,9 +24,9 @@ class Player(arcade.Sprite):
         self.textures = []
         # Load a left facing texture and a right facing texture.
         # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
+        texture = arcade.load_texture(":resources:quest/exemples/pirate.30.39.AM.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
+        texture = arcade.load_texture(":resources:quest/exemples/pirate.30.39.AM.png", mirrored=True)
         self.textures.append(texture)
 
         self.scale = SPRITE_SCALING
