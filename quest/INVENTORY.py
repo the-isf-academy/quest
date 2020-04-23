@@ -1,8 +1,15 @@
 
 if player inputs (x) and is near item, player picks up the item and then stores it in the backpack
 when player inputs (e), player opens inventory.
-def on_key_press(self, key, modifiers):
+print inventory
 
+
+
+
+
+
+
+def on_key_press(self, key, modifiers):
     if self.current_modal:
         self.current_modal.on_key_press(key, modifiers)
     else:
@@ -10,10 +17,22 @@ def on_key_press(self, key, modifiers):
             self.display_inventory.
         if key == arcade.key.x:
             self.pickup_item.
-def Inventory()
+class Inventory:
     def store_item():
         inventory={}
-        if key == arcade.key 
+        if key == arcade.key
+    def display_inventory():
+        print self.dict_inventory
+    def __init__():
+        self.dict_inventory = {}
+        
+
+
+
+
+
+
+
 
 
 
