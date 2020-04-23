@@ -14,7 +14,12 @@ TEXTURE_UP=
 TEXTURE_DOWN=3
 
 #Code by Paul Vincent Craven
+<<<<<<< HEAD
+
+    class Player(arcade.Sprite):
+=======
 class Player(arcade.Sprite):
+>>>>>>> 6d700578958f5791cafca392757db534068f9468
 
     def __init__(self):
         super().__init__()
@@ -127,10 +132,18 @@ class MyGame(arcade.Window):
     def on_key_release(self, key, modifiers):
         #Called when the user releases a key.
 
+<<<<<<< HEAD
+            if key == arcade.key.UP or key == arcade.key.DOWN:
+                self.player_sprite.change_y = 0
+            elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+                self.player_sprite.change_x = 0
+
+=======
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
+>>>>>>> 6d700578958f5791cafca392757db534068f9468
 
 
 class QuestSprite(Sprite):
@@ -223,6 +236,7 @@ class Background(QuestSprite):
     """
     description = "background"
 
+<<<<<<< HEAD
 
 
 
@@ -232,3 +246,7 @@ class Background(QuestSprite):
 
 
 
+=======
+class Boat(Player):
+    
+>>>>>>> 4b13c49658f4dc2810c8f16d4b0846ec9eed9c30
