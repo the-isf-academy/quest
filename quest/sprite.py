@@ -1,150 +1,8 @@
 from arcade.sprite import Sprite
 from arcade import calculate_points
-from helpers import scale
+from quest.helpers import scale
 import arcade
 import os
-
-SPRITE_SCALING = 0.5
-
-MOVEMENT_SPEED = 5
-
-TEXTURE_LEFT = 0
-TEXTURE_RIGHT = 1
-TEXTURE_UP=
-TEXTURE_DOWN=3
-
-#Code by Paul Vincent Craven
-<<<<<<< HEAD
-
-    class Player(arcade.Sprite):
-=======
-class Player(arcade.Sprite):
->>>>>>> 6d700578958f5791cafca392757db534068f9468
-
-    def __init__(self):
-        super().__init__()
-
-        self.textures = []
-        # Load a left facing texture and a right facing texture.
-        # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:examples/pirate.30.39 AM.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:examples/pirate.30.39 AM.png", mirrored=True)
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
-        self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
-        self.textures.append(texture)
-
-        self.scale = SPRITE_SCALING
-        # By default, face right.
-        self.set_texture(TEXTURE_DOWN)
-
-        def update(self):
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-
-            # Figure out if we should face left or right
-            if self.change_x < 0:
-                self.texture = self.textures[TEXTURE_LEFT]
-            elif self.change_x > 0:
-                self.texture = self.textures[TEXTURE_RIGHT]
-
-            if self.change_y < 0:
-                self.texture = self.textures[TEXTURE_DOWN]
-            elif self.change_y > 0:
-                self.texture = self.textures[TEXTURE_UP]
-
-            if self.left < 0:
-                self.left = 0
-            elif self.right > SCREEN_WIDTH - 1:
-                self.right = SCREEN_WIDTH - 1
-
-            if self.bottom < 0:
-                self.bottom = 0
-            elif self.top > SCREEN_HEIGHT - 1:
-                self.top = SCREEN_HEIGHT - 1
-
-
-class MyGame(arcade.Window):
-    """
-    Main application class.
-    """
-    def __init__(self, width, height, title):
-
-        #Initializer
-
-
-        # Call the parent class initializer
-        super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
-
-        # Variables that will hold sprite lists
-        self.all_sprites_list = None
-
-        # Set up the player info
-        self.player_sprite = None
-
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
-
-    def setup(self):
-        #Set up the game and initialize the variables.
-
-        # Sprite lists
-        self.all_sprites_list = arcade.SpriteList()
-
-        # Set up the player
-        self.player_sprite = Player()
-        self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
-        self.all_sprites_list.append(self.player_sprite)
-
-    def on_draw(self):
-
-        #Render the screen.
-
-
-        # This command has to happen before we start drawing
-        arcade.start_render()
-
-        # Draw all the sprites.
-        self.all_sprites_list.draw()
-
-    def on_key_press(self, key, modifiers):
-        #Called whenever a key is pressed.
-
-        if key == arcade.key.UP:
-            self.player_sprite.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
-            self.player_sprite.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
-            self.player_sprite.change_x = MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-        #Called when the user releases a key.
-
-<<<<<<< HEAD
-            if key == arcade.key.UP or key == arcade.key.DOWN:
-                self.player_sprite.change_y = 0
-            elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-                self.player_sprite.change_x = 0
-
-=======
-        if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.player_sprite.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.player_sprite.change_x = 0
->>>>>>> 6d700578958f5791cafca392757db534068f9468
-
 
 class QuestSprite(Sprite):
     """
@@ -207,6 +65,7 @@ class QuestSprite(Sprite):
         By default, if the sprite has a strategy, it uses the strategy
         to set its course.
         """
+        print("sprite_update")
         self.all_sprites_list.update()
 
         if self.strategy:
@@ -235,18 +94,3 @@ class Background(QuestSprite):
     """A sprite that does nothing.
     """
     description = "background"
-
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-=======
-class Boat(Player):
-    
->>>>>>> 4b13c49658f4dc2810c8f16d4b0846ec9eed9c30
