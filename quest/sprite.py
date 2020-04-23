@@ -1,6 +1,6 @@
 from arcade.sprite import Sprite
 from arcade import calculate_points
-from quest.helpers import scale
+from helpers import scale
 import arcade
 import os
 
@@ -10,7 +10,7 @@ MOVEMENT_SPEED = 5
 
 TEXTURE_LEFT = 0
 TEXTURE_RIGHT = 1
-TEXTURE_UP=2
+TEXTURE_UP=
 TEXTURE_DOWN=3
 
 #Code by Paul Vincent Craven
@@ -22,9 +22,9 @@ class Player(arcade.Sprite):
         self.textures = []
         # Load a left facing texture and a right facing texture.
         # mirrored=True will mirror the image we load.
-        texture = arcade.load_texture(":resources:images/enemies/bee.png")
+        texture = arcade.load_texture(":resources:examples/pirate.30.39 AM.png")
         self.textures.append(texture)
-        texture = arcade.load_texture(":resources:images/enemies/bee.png", mirrored=True)
+        texture = arcade.load_texture(":resources:examples/pirate.30.39 AM.png", mirrored=True)
         self.textures.append(texture)
         texture = arcade.load_texture(":resources:images/enemies/bee.png")
         self.textures.append(texture)
@@ -134,7 +134,8 @@ class MyGame(arcade.Window):
 
 
 class QuestSprite(Sprite):
-    he base class for sprites in Quest.
+    """
+    The base class for sprites in Quest.
 
     A :py:class:`QuestSprite` is a subclass of :py:class:`arcade.Sprite` with a
     few additional methods to help integrate into the Quest framework.
@@ -148,7 +149,7 @@ class QuestSprite(Sprite):
     Arguments:
         filename: The only required argument is the name of the sprite's image file.
         kwargs: There are many optional keyword arguments inherited from :py:class:`arcade.Sprite`.
-
+    """
     description = "quest sprite"
     strategy = None
     speed = 1
@@ -221,3 +222,13 @@ class Background(QuestSprite):
     """A sprite that does nothing.
     """
     description = "background"
+
+
+
+
+
+
+
+
+
+
