@@ -8,3 +8,4 @@ mixins to the base classes of Quest.
    :maxdepth: 4
 
    mouse
+   player_enabled
