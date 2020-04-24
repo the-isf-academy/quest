@@ -1,5 +1,6 @@
 from PIL import Image
 import xml.etree.ElementTree as ET
+import quest
 from itertools import product, chain
 from pathlib import Path
 from enum import Flag, auto
@@ -293,4 +294,6 @@ class SimpleInkParser:
         match = re.match("===\s+([a-zA-Z_]+)\s+===", line)
         return match.group(1) if match else None
 
-
+def resolve_resource_path(filename):
+    "Resolves a resource path for example game resouces (so they can be played from anywhere)."
+    return str(Path(quest.__file__).parent / "examples" / filename)

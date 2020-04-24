@@ -2,16 +2,13 @@ from quest.game import QuestGame
 from quest.map import Map, GridMapLayer
 from quest.maze import Maze
 from quest.sprite import Wall, NPC
+from quest.helpers import resolve_resource_path
 from itertools import product
 import arcade
 import random
 from datetime import datetime
 import os
 from pathlib import Path
-
-def resolve_path(relative_path):
-    here = Path(os.path.abspath(__file__)).parent
-    return str(here / relative_path)
 
 class MazeGame(QuestGame):
     """Get all the stars as fast as you can! My record is 45 seconds.
@@ -48,7 +45,7 @@ class MazeGame(QuestGame):
     tile_size = 32
     grid_columns = 33
     grid_rows = 33
-    player_sprite_image = resolve_path("images/boy_simple.png")
+    player_sprite_image = resolve_resource_path("images/boy_simple.png")
     player_scaling = 0.5
     player_speed = 5
     player_initial_x = 1.5 * tile_size
@@ -165,7 +162,7 @@ class MazeMap(Map):
             rows=self.rows,
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
-            sprite_filename=resolve_path("images/box.png"),
+            sprite_filename=resolve_resource_path("images/box.png"),
             sprite_class=Wall,
         )
 
@@ -178,7 +175,7 @@ class MazeMap(Map):
             rows=self.rows,
             pixel_width=self.columns * self.tile_size,
             pixel_height=self.rows * self.tile_size,
-            sprite_filename=resolve_path("images/star.png"),
+            sprite_filename=resolve_resource_path("images/star.png"),
             sprite_class=Loot
         )
 
