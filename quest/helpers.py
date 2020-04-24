@@ -243,7 +243,7 @@ class SimpleInkParser:
         """Splits a list of strings on a condition and joins the results. For example, 
 
             >>> vowel = lambda l: l in 'aeiou'
-            >>> split_and_join(list('abcdefghijklmnop'))
+            >>> split_and_join('abcdefghijklmnop', vowel)
             ['a', 'bcde', 'fghi', 'jklmno', 'p']
         """
         splits = [i for i, s in enumerate(strings) if condition(s)]
