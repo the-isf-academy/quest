@@ -75,7 +75,7 @@ class MazeGame(QuestGame):
         """
         self.npc_list = self.get_current_map().get_layer_by_name("loot").sprite_list
 
-    def on_loot_collected(self):
+    def on_loot_collected(self, collector):
         """A method to be called whenever loot is collected.
 
         See the :py:class:`Loot` NPC sprite below. It calls this method whenever there is
@@ -103,7 +103,7 @@ class Loot(NPC):
         """When the player collides with a Loot, it calls :py:meth:`quest.maze.MazeMap.on_loot_collected` to tell
         the game to make needed updates. Then the Loot kills itself.
         """
-        game.on_loot_collected()
+        game.on_loot_collected(sprite)
         print("Got a star!")
         self.kill()
 

@@ -91,6 +91,26 @@ class Direction(Flag):
         """
         return self in [self.NE, self.NW, self.SW, self.SE]
 
+    def turn_clockwise(self):
+        """Returns the direction 90 degrees clockwise. Only supports cardinal directions.
+        """
+        return {
+            Direction.E: Direction.S,
+            Direction.S: Direction.W,
+            Direction.W: Direction.N,
+            Direction.N: Direction.E,
+        }[self]
+
+    def turn_anticlockwise(self):
+        """Returns the direction 90 degrees anticlockwise. Only supports cardinal directions.
+        """
+        return {
+            Direction.E: Direction.N,
+            Direction.N: Direction.W,
+            Direction.W: Direction.S,
+            Direction.S: Direction.E,
+        }[self]
+
     def to_vector(self, normalized=False):
         """Converts the Direction into an (x, y) tuple.
 
