@@ -3,17 +3,11 @@ from quest.map import TiledMap
 from quest.dialogue import Dialogue
 from quest.modal import Modal, DialogueModal
 from quest.sprite import QuestSprite, Player, Wall, NPC
-from quest.helpers import scale
+from quest.helpers import scale, resolve_resource_path
 from quest.strategy import RandomWalk
 import arcade
 import os
 from pathlib import Path
-
-def resolve_path(relative_path):
-    """A helper function to find images and other resources.
-    """
-    here = Path(os.path.abspath(__file__)).parent
-    return str(here / relative_path)
 
 class GrandmasSoupGame(QuestGame):
     """Help Grandma find all the ingredients for her soup.
@@ -34,7 +28,7 @@ class GrandmasSoupGame(QuestGame):
         items: A list to keep track of which items the player has collected.
     """
 
-    player_sprite_image = resolve_path("images/boy_simple.png")
+    player_sprite_image = resolve_resource_path("images/boy_simple.png")
     screen_width = 500
     screen_height = 500
     left_viewport_margin = 96                            
@@ -47,7 +41,7 @@ class GrandmasSoupGame(QuestGame):
 
     def __init__(self):
         super().__init__()
-        self.dialogue = Dialogue.from_ink(resolve_path("grandma.ink"))
+        self.dialogue = Dialogue.from_ink(resolve_resource_path("grandma.ink"))
         self.modal = DialogueModal(self, self.dialogue)
         self.items = []
 
@@ -59,7 +53,7 @@ class GrandmasSoupGame(QuestGame):
             "Obstacles": Wall,
             "Background": QuestSprite,
         }
-        self.add_map(TiledMap(resolve_path("images/island/island.tmx"), sprite_classes))
+        self.add_map(TiledMap(resolve_resource_path("images/island/island.tmx"), sprite_classes))
 
     def setup_walls(self):
         """As in other examples, assigns all sprites in the "Obstacles" layer to be walls.
@@ -78,7 +72,7 @@ class GrandmasSoupGame(QuestGame):
         ]
         self.npc_list = arcade.SpriteList()
         for sprite_class, image, scale, x, y in npc_data:
-            sprite = sprite_class(resolve_path(image), scale)
+            sprite = sprite_class(resolve_resource_path(image), scale)
             sprite.center_x = x
             sprite.center_y = y
             self.npc_list.append(sprite)

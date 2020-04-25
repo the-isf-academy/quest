@@ -1,15 +1,10 @@
 from quest.game import QuestGame
 from quest.map import TiledMap
 from quest.sprite import Background, Wall
+from quest.helpers import resolve_resource_path
 import arcade
 import os
 from pathlib import Path
-
-def resolve_path(relative_path):
-    """A helper function to find images and other resources.
-    """
-    here = Path(os.path.abspath(__file__)).parent
-    return str(here / relative_path)
 
 class IslandAdventure(QuestGame):
     """A very simple subclass of :py:class:`QuestGame`.
@@ -24,7 +19,7 @@ class IslandAdventure(QuestGame):
     blue bar just above.
     """
 
-    player_sprite_image = resolve_path("images/boy_simple.png")
+    player_sprite_image = resolve_resource_path("images/boy_simple.png")
     screen_width = 500
     screen_height = 500
     left_viewport_margin = 96                            
@@ -46,7 +41,7 @@ class IslandAdventure(QuestGame):
             "Obstacles": Wall,
             "Background": Background,
         }
-        island_map = TiledMap(resolve_path("images/island/island.tmx"), sprite_classes)
+        island_map = TiledMap(resolve_resource_path("images/island/island.tmx"), sprite_classes)
         self.add_map(island_map)
 
     def setup_walls(self):

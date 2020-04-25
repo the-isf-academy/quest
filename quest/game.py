@@ -177,6 +177,7 @@ class QuestGame(arcade.Window):
             delta_time: How much time has passed since the last update.
         """
         if self.running:
+            self.player.on_update(self)
             for npc in self.npc_list:
                 npc.on_update(self)
             self.physics_engine.update()
