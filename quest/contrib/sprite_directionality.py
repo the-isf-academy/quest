@@ -1,12 +1,11 @@
 # sprite_directionality.py example game
 # by Team Sonic and Jacob Wolf
 #
-# This example game showcases teh sprite directionality feature found in
+# This example game showcases the sprite directionality feature found in
 # quest/contrib/sprite_directionality.py
 #
 # Built based on code by Paul Vicent Craven
 
-from arcade.sprite import Sprite
 import arcade
 
 TEXTURE_LEFT = 0
@@ -14,8 +13,8 @@ TEXTURE_RIGHT = 1
 TEXTURE_DOWN = 2
 TEXTURE_UP = 3
 
-class SpriteDirectionMixin(Sprite):
-    """ quest.Sprite mixin that allows the sprite to face different
+class DirectionalMixin:
+    """ A mixin for `quest.sprite.Sprite` that allows the sprite to face different
     directions depending on which direction the sprite is moving.
 
     Arguments:
@@ -42,14 +41,11 @@ class SpriteDirectionMixin(Sprite):
     def on_update(self, game):
         """Change texture based on player direction.
         """
-        if self.strategy:
-            self.set_course(self.strategy.choose_course(self, game))
-        
+        super().on_update(game)
         if self.change_x < 0:
             self.texture = self.textures[TEXTURE_LEFT]
         elif self.change_x > 0:
             self.texture = self.textures[TEXTURE_RIGHT]
-
         if self.change_y < 0:
             self.texture = self.textures[TEXTURE_DOWN]
         elif self.change_y > 0:
