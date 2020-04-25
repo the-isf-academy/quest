@@ -10,3 +10,4 @@ mixins to the base classes of Quest.
    mouse
    player_enabled
    hit_points
+   npchase
