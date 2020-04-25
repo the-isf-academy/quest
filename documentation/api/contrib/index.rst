@@ -11,3 +11,4 @@ mixins to the base classes of Quest.
    player_enabled
    hit_points
    npchase
+   sprite_directionality
