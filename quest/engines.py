@@ -19,15 +19,13 @@ class QuestPhysicsEngine:
     When players or NPCs collide with walls, they are pushed back until they are no longer
     colliding. When players or NPCs collide with each other, their `on_collision` methods
     are called, but they are not automatically repelled. If you want players or NPCs to be
-    repelled from each other, see :py:class:`quest.examples.grandmas_soup.Grandma`. Time-based
-    updates are optionally implemented using the argument `time` which defaults to False.
+    repelled from each other, see :py:class:`quest.examples.grandmas_soup.Grandma`. 
 
     Args:
         game (QuestGame): The game to which the engine will be attached.
     """
-    max_darkness = 100
 
-    def __init__(self, game, time=False, time_cycle_secs=30):
+    def __init__(self, game):
         self.game = game
         self.player_list=game.player_list
         self.wall_list=game.wall_list
@@ -37,29 +35,10 @@ class QuestPhysicsEngine:
         for layer in curr_map.layers:
             all_sprite_lists.append(layer.sprite_list)
         self.all_sprites = SpriteListList(all_sprite_lists)
-        self.time = time
-        self.time_cycle_secs = time_cycle_secs
 
     def update(self, game):
-        """Updates game based on time the game has run if the time option is set. Otherwise,
-        waits for implementation from a more complex physics engine like py:class:`ContinuousPhysicsEngine`
+        """waits for implementation from a more complex physics engine like py:class:`ContinuousPhysicsEngine`
         """
-        if self.time:
-            self.time_updates()
-
-    def time_updates(self):
-        self.update_sprites_for_time()
-
-    def update_sprites_for_time(self):
-        """Calculates shade by converting the time passed since the start of the game to a percentage
-        of the current day/night cycle.
-        """
-        time_since_start = time()-self.game.start_time
-        curr_mod = time_since_start%self.time_cycle_secs
-        grade = abs(curr_mod - self.time_cycle_secs/2) / (self.time_cycle_secs/2)
-        color_value = grade*(255-self.max_darkness) + self.max_darkness
-        for sprite in self.all_sprites:
-            sprite.color = (color_value, color_value, color_value)
 
     def player(self):
         return self.player_list.sprite_list[0]
