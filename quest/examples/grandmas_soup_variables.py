@@ -1,15 +1,10 @@
 from quest.dialogue import Dialogue
 from quest.modal import Modal, DialogueModal
 from quest.examples.grandmas_soup import GrandmasSoupGame
+from quest.helpers import resolve_resource_path
 
 import os
 from pathlib import Path
-
-def resolve_path(relative_path):
-    """A helper function to find images and other resources.
-    """
-    here = Path(os.path.abspath(__file__)).parent
-    return str(here / relative_path)
 
 class GrandmasSoupVariablesGame(GrandmasSoupGame):
     """Help Grandma find all the ingredients for her soup.
@@ -35,7 +30,7 @@ class GrandmasSoupVariablesGame(GrandmasSoupGame):
     def setup_dialogue(self):
         """Sets up the dialogue with dialogue variables.
         """
-        self.dialogue = Dialogue.from_ink(resolve_path("grandma_variables.ink"))
+        self.dialogue = Dialogue.from_ink(resolve_resource_path("grandma_variables.ink"))
         self.dialogue_vars =    {"num_veggies_left" : 4,
                                  "veggies" : "tomato, carrots, and potatoes"}
         self.dialogue.dialogue_vars = self.dialogue_vars

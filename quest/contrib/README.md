@@ -5,7 +5,6 @@ This directory will store student feature contributions to the Quest framework. 
 
 You can import a mixin from the contrib directory into your game module like this:
 
-    :::python
     from quest.contrib.MIXIN_NAME import MixinClass
 
 ## Contributing a feature
