@@ -65,9 +65,6 @@ class QuestSprite(Sprite):
         By default, if the sprite has a strategy, it uses the strategy
         to set its course.
         """
-        print("sprite_update")
-        self.all_sprites_list.update()
-
         if self.strategy:
             self.set_course(self.strategy.choose_course(self, game))
 
