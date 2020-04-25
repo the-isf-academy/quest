@@ -12,5 +12,6 @@ mixins to the base classes of Quest.
    hit_points
    npchase
    sprite_directionality
+   timer
    target_strategy
    maze_walk_strategy
