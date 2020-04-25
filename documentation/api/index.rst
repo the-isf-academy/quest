@@ -14,3 +14,4 @@ This section of the documentation explains each class and function in the Quest 
    modal
    dialogue
    advanced
+   contrib/index
