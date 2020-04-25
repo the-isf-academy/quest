@@ -1,5 +1,5 @@
-Hit Points
-==========
+Sprite Directionality
+=====================
 
 Contributed by Team Sonic.
 

@@ -1,4 +1,4 @@
-Mouse
+Timer
 =====
 
 .. automodule:: quest.contrib.timer
