@@ -1,0 +1,7 @@
+
+
+##Brainsstorm: So basiclly the enerymy character that spawns in will only spawn in if you get the question wrong (if statement), and will try to melee the character (we dont want to overcomplicate with guns)The spawned NC will try and find the most direct route to the player. If it bumps inti a wall it will stop moving (lost line of sight)B
+
+if __name__ == '__main__':
+    game = YOURGAMECLASSGame()
+    game.run()
