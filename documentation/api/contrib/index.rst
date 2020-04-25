@@ -12,3 +12,4 @@ mixins to the base classes of Quest.
    hit_points
    npchase
    sprite_directionality
+   timer
