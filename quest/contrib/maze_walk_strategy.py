@@ -16,7 +16,7 @@ class MazeWalkStrategy(TargetStrategy):
 
     To implement this insight, we can start with `quest.contrib.target_strategy.TargetStrategy`, which 
     knows how to direct a sprite toward a target until it gets there, and then to choose a new target.
-    We just need to choose new targets i a way that gets the sprite around the maze.
+    We just need to choose new targets in a way that gets the sprite around the maze.
 
     To choose a target, the sprite needs to have a `heading`, which keeps track of the direction
     it is currently facing. Then, if it's possible to turn left, always do that. Otherwise go straight. 

@@ -7,8 +7,8 @@
 from time import time
 
 class TimerMixin:
-    """ Maintains a clock for the game that can enforced time-based game states and elements
-    like a countdown.
+    """ Maintains a clock for the game that can enforce time-based game states
+    and elements like a countdown.
 
     You can mix this class into a physics engine like this:
         class TimedPhysicsEngine(PhysicsEngine, TimerMixin):

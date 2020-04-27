@@ -19,7 +19,7 @@ class DirectionalMixin:
 
     Arguments:
         player_sprite_image_lr (string): file path to image for left and
-                                         righ player sprite image
+                                         right player sprite image
         player_sprite_image_up (string): file path to up facing image
         player_sprite_image_down (string): file path to down facing image
         player_scaling (int): scale for the sprite image
