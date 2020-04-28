@@ -180,7 +180,7 @@ def tileset_to_collection(image_path, tile_size, output_dir, name="tileset", cre
     if create_tsx:
         tileset = empty_tileset(tile_size, cols, rows, name)
         for ix, (j, i) in enumerate(product(range(rows), range(cols))):
-            add_tile(tileset, ix, "img_{}_{}.png".format(j, i))
+            add_tile(tileset, ix, "img_{}_{}.png".format(j, i), tile_size)
         with open(Path(output_dir) / "{}.tsx".format(name), 'wb') as f:
             ET.ElementTree(tileset).write(f, encoding="UTF-8", xml_declaration=True)
 
@@ -199,12 +199,12 @@ def empty_tileset(tile_size, cols, rows, name):
     grid.set('height', "1")
     return tileset
 
-def add_tile(tileset, tile_id, img_path):
+def add_tile(tileset, tile_id, img_path, tile_size):
     tile_element = ET.SubElement(tileset, 'tile')
     tile_element.set('id', str(tile_id) )
     img_element = ET.SubElement(tile_element, 'image')
-    img_element.set('width', tileset.get('tilewidth'))
-    img_element.set('height', tileset.get('tileheight'))
+    img_element.set('width', str(tile_size))
+    img_element.set('height', str(tile_size))
     img_element.set('source', img_path)
 
 def normalize(vector):

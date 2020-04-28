@@ -17,3 +17,6 @@ mixins to the base classes of Quest.
    maze_walk_strategy
    coin
    shop
+   removable
+   inventory
+   submodal
