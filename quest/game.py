@@ -131,7 +131,7 @@ class QuestGame(arcade.Window):
         Returns:
             The current Map.
         """
-        if self.current_map_index is None:
+        if not hasattr(self, "current_map_index") or self.current_map_index is None:
             raise NoMapError("The game has no maps")
         return self.maps[self.current_map_index]
 
