@@ -17,6 +17,7 @@ class TextLabel:
     def __init__(self, text, x_center, y_center):
         self.x_center = x_center
         self.y_center = y_center
+        self.text_value = text
         if self.wrap_at:
             self.text_lines = wrap(text, self.wrap_at)
         else:
@@ -78,9 +79,11 @@ class TextLabelStack:
         for label in self.text_labels:
             label.draw()
 
-    def get_highlight(self):
+    def get_highlight(self, value=False):
         for label_index, label in enumerate(self.text_labels):
             if label.highlight:
+                if value:
+                    return label.text_value
                 return label_index
 
     def set_highlight(self, i):

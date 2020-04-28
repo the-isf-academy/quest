@@ -15,3 +15,5 @@ mixins to the base classes of Quest.
    timer
    target_strategy
    maze_walk_strategy
+   coin
+   shop
