@@ -3,7 +3,7 @@ from pathlib import Path
 
 setuptools.setup(
     name="questgame",
-    version="0.1.7",
+    version="0.1.8",
     author="Chris Proctor",
     author_email="chris@chrisproctor.net",
     description="A simple game framework",
@@ -11,6 +11,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/cproctor/quest",
     packages=setuptools.find_packages(),
+    package_data = {
+        'examples/images': ['*.png']
+        'examples/images': ['*.tmx']
+        'examples/images': ['*.tsx']
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
