@@ -11,10 +11,12 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/cproctor/quest",
     packages=setuptools.find_packages(),
-    package_data = {
-        'examples/images': ['*.png']
-        'examples/images': ['*.tmx']
-        'examples/images': ['*.tsx']
+    package_data={
+        'quest.examples.images': ['*.png', '*.tmx', '*.tsx'],
+        'quest.examples.images.people': ['*.png', '*.tmx', '*.tsx'],
+        'quest.examples.images.island': ['*.png', '*.tmx', '*.tsx'],
+        'quest.examples.images.items': ['*.png', '*.tmx', '*.tsx']
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
