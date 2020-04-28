@@ -15,12 +15,14 @@ class Modal:
     """
     width = 400
     height = 400
+    line_height = 20
     background_color = arcade.color.LIGHT_GRAY
 
     def __init__(self, game):
         self.game = game
         self.x_center = 0
         self.y_center = 0
+        self.current_option = 0
         self.set_text_labels()
         self.set_option_labels()
 
@@ -30,20 +32,37 @@ class Modal:
         self.set_text_labels()
         self.set_option_labels()
 
+    def text_label_contents(self):
+        "Returns a list of strings to be presented as text labels."
+
+        return ["Sorry to bother you with this modal.", "But it's important."]
+
+    def option_label_contents(self):
+        "Returns a list of strings to be presented as option labels."
+        
+        return ["OK", "Fine"]
+
     def set_text_labels(self):
+        """Creates text labels.
+        """
         self.text_labels = TextLabelStack(
-            ["Sorry to bother you with this modal.", "But it's important."], 
+            self.text_label_contents(),
             self.x_center,
             self.y_center + self.height / 2
         )
 
     def set_option_labels(self):
+        """Creates option labels. 
+        """
+        options = self.option_label_contents()
+        disposable_stack = TextLabelStack(options, 0, 0)
         self.option_labels = TextLabelStack(
-            ["OK", "Fine"],
+            options,
             self.x_center,
-            self.y_center + 100
+            self.y_center - self.height / 2 + disposable_stack.height()
         )
-        self.option_labels.set_highlight(0)
+        self.current_option = 0
+        self.option_labels.set_highlight(self.current_option)
 
     def choose_option(self, value):
         """When a button is clicked, it calls choose_option with its value.
@@ -55,13 +74,18 @@ class Modal:
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.W:
-            i = (self.option_labels.get_highlight() + 1) % len(self.option_labels)
-            self.option_labels.set_highlight(i)
+            self.current_option = (self.current_option - 1) % len(self.option_labels)
+            self.option_labels.set_highlight(self.current_option)
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            i = (self.option_labels.get_highlight() - 1) % len(self.option_labels)
-            self.option_labels.set_highlight(i)
+            self.current_option = (self.current_option + 1) % len(self.option_labels)
+            self.option_labels.set_highlight(self.current_option)
         elif key == arcade.key.ENTER:
-            self.choose_option(self.option_labels.get_highlight())
+            self.handle_choice()
+    
+    def handle_choice(self):
+        self.choose_option(self.current_option)
+        self.set_text_labels()
+        self.set_option_labels()
 
     def on_draw(self):
         arcade.draw_rectangle_filled(
@@ -81,25 +105,13 @@ class DialogueModal(Modal):
         self.dialogue = dialogue
         super().__init__(game)
 
-    def set_text_labels(self):
-        self.text_labels = TextLabelStack(
-            self.dialogue.get_content(),
-            self.x_center,
-            self.y_center + self.height / 2
-        )
+    def text_label_contents(self):
+        return self.dialogue.get_content()
 
-    def set_option_labels(self):
-        self.option_labels = TextLabelStack(
-            self.dialogue.get_options(),
-            self.x_center,
-            self.y_center 
-        )
-        self.option_labels.set_highlight(0)
+    def option_label_contents(self):
+        return self.dialogue.get_options()
 
     def choose_option(self, value):
         self.dialogue.choose(value)
-        if self.dialogue.running:
-            self.set_text_labels()
-            self.set_option_labels()
-        else:
+        if not self.dialogue.running:
             self.game.close_modal()

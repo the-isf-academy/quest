@@ -46,6 +46,16 @@ Oh, what a beautiful mushroom. It reminds me of my girlhood. But I still need mo
 
 + OK -> END
 
+=== TWO ===
+How do you expect me to make soup with these? I need two more vegetables.
+
++ OK -> END
+
+=== THREE ===
+I am just about ready to make soup. Just missing one thing...
+
++ OK -> END
+
 === SOUP ===
 Ah, now we have everything we need for some delicious soup! why don't you go explore the island 
 and I'll call you when it is ready?
