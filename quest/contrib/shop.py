@@ -16,7 +16,7 @@ class ShopMixin:
     def __init__(self):
         super().__init__()
         self.shop = ShopModal(self, self.shop_file)
-        self.item = []
+        self.items = []
 
     def on_key_press(self, key, modifiers):
         """Handles key pressess to open and shop.
