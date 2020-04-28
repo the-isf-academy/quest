@@ -89,6 +89,7 @@ class InventoryModal(SubmodalMixin, Modal):
     """
     welcome_message = "Your inventory:"
     close_modal_option = "OK"
+    detail_modal_class = InventoryItemModal
 
     def __init__(self, game, inventory):
         self.inventory = inventory
@@ -108,7 +109,7 @@ class InventoryModal(SubmodalMixin, Modal):
             for item in self.inventory:
                 if chosen_description.startswith(item.description):
                     count = self.item_counts()[item.description]
-                    self.submodal = InventoryItemModal(self.game, item, count)
+                    self.submodal = self.detail_modal_class(self.game, item, count)
                     return
 
     def item_counts(self):
