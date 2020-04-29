@@ -112,7 +112,7 @@ class InventoryModal(SubmodalMixin, Modal):
         else:
             description = self.unique_item_descriptions()[value]
             item = self.get_item_with_description(description)
-            self.submodal = self.get_detail_modal(item)
+            self.open_submodal(self.get_detail_modal(item))
 
     def get_detail_modal(self, item):
         count = self.count_items_with_description(item.description)
@@ -163,4 +163,4 @@ class InventoryItemModal(Modal):
             self.game.drop(self.item) 
         elif verb == self.use_option:
             self.item.use(self.game)
-        self.active = False
+        self.close()

@@ -8,7 +8,11 @@ from quest.text_label import TextLabelStack
 
 class Modal:
     """ A modal window is a pop-up that pauses the game until it is resolved.
-    It is called a Modal because it puts the game into a new mode. 
+    It is called a Modal because it puts the game into a new mode. To write modal subclasses,
+    override `text_label_contents()` to change what is displayed, `option_label_contents()` to 
+    change the options presented, and `choose_option(value)` to change what should happen
+    when a value is chosen. When a modal is ready to be closed, it should call `self.close()` from
+    `choose_option`. 
 
     Arguments: 
         game: The game which the Modal is part of.
@@ -17,7 +21,6 @@ class Modal:
     height = 400
     line_height = 20
     background_color = arcade.color.LIGHT_GRAY
-    active = True
 
     def __init__(self, game):
         self.game = game
@@ -136,7 +139,6 @@ class AlertModal(Modal):
 
     def handle_choice(self):
         self.choose_option(self.current_option)
-        self.close()
 
     def choose_option(self, value):
-        self.active = False
+        self.close()

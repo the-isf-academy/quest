@@ -43,22 +43,33 @@ class ShopMixin(RemovableMixin):
         if hasattr(self, "inventory"):
             self.inventory().append(item)
 
-class ShopModal(InventoryModal):
+class ShopModal(SubmodalMixin, Modal):
     """Opens a shop modal. 
-    
-    A shop is really just an inventory--someone else's inventory--that you can 
-    buy stuff from. Therefore, we can easily implement ShopModal by subclassing
-    InventoryModal.
     """
     welcome_message = "Welcome to the shop."
     close_modal_option = "Thanks, bye."
 
-    def item_descriptions(self):
-        return ["[${}] {}".format(i.price, i.description) for i in self.inventory]
+    def __init__(self, game, inventory):
+        self.inventory = inventory
+        super().__init__(game)
+
+    def text_label_contents(self):
+        return [self.welcome_message]
+
+    def option_label_contents(self):
+        labels = ["[${}] {}".format(i.price, i.description) for i in self.inventory]
+        labels.append(self.close_modal_option)
+        return labels
+
+    def choose_option(self, value):
+        if value == len(self.inventory):
+            self.game.close_modal()
+        else:
+            item = self.inventory[value]
+            self.open_submodal(self.get_detail_modal(item))
 
     def get_detail_modal(self, item):
         return ShopItemModal(self.game, item)
-        
 
 class ShopItemModal(SubmodalMixin, Modal):
     purchase_message = "Pleasure doing business with you."
@@ -81,15 +92,22 @@ class ShopItemModal(SubmodalMixin, Modal):
         return [self.buy_option, self.close_modal_option]
 
     def choose_option(self, value):
-        if self.submodal and not self.submodal.active:
-            self.active = False
+        print("SHOP ITEM MODAL CHOOISING OPTION {}".format(value))
         verb = self.option_label_contents()[value]
         if verb == "buy":
             if self.item.price <= self.game.money:
                 self.game.buy_item(self.item)
-                self.submodal = AlertModal(self.game, self.purchase_message)
+                modal = ShopResultModal(self.game, self.purchase_message)
             else:
-                self.submodal = AlertModal(self.game, self.fail_message)
+                modal = ShopResultModal(self.game, self.fail_message)
+            self.open_submodal(modal)
+        else:
+            print("CLOSING SHOP ITEM MODAL")
+            self.close()
 
     def money_message(self):
         return "You have ${}.".format(self.game.money)
+
+class ShopResultModal(AlertModal):
+    def choose_option(self, value):
+        self.parent.close()
