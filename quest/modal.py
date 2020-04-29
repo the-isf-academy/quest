@@ -68,7 +68,7 @@ class Modal:
     def choose_option(self, value):
         """When a button is clicked, it calls choose_option with its value.
         """
-        self.game.close_modal()
+        self.close()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.W:
@@ -98,6 +98,10 @@ class Modal:
         self.text_labels.draw()
         self.option_labels.draw()
 
+    def close(self):
+        self.game.close_modal()
+        
+
 class DialogueModal(Modal):
     """A modal window powered by a Dialogue object.
     """
@@ -115,7 +119,7 @@ class DialogueModal(Modal):
         print("Choosing {}".format(value))
         self.dialogue.choose(value)
         if not self.dialogue.running:
-            self.game.close_modal()
+            self.close()
 
 class AlertModal(Modal):
     "A simple modal, just used to return a result."
@@ -132,7 +136,7 @@ class AlertModal(Modal):
 
     def handle_choice(self):
         self.choose_option(self.current_option)
-        self.game.close_modal()
+        self.close()
 
     def choose_option(self, value):
         self.active = False

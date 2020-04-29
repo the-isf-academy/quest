@@ -43,8 +43,9 @@ class SubmodalMixin:
     def set_text_labels(self):
         """Creates text labels.
         """
+        m = self.get_active_modal()
         self.text_labels = TextLabelStack(
-            self.get_active_modal().text_label_contents(),
+            m.text_label_contents(),
             self.x_center,
             self.y_center + self.height / 2
         )
@@ -65,11 +66,14 @@ class SubmodalMixin:
 
     def handle_change_option(self, change):
         m = self.get_active_modal()
+        print("CHANGING OPTION WITH {} IN CONTROL".format(m.__class__.__name__))
         m.current_option = (m.current_option + change) % len(m.option_labels)
-        m.option_labels.set_highlight(m.current_option)
+        self.option_labels.set_highlight(m.current_option)
 
     def handle_choice(self):
         "Lets submodal choose option, if set"
-        self.get_active_modal().choose_option(self.get_active_modal().current_option)
+        m = self.get_active_modal()
+        print("HANDLING CHOICE WITH {} IN CONTROL".format(m.__class__.__name__))
+        m.choose_option(m.current_option)
         self.set_text_labels()
         self.set_option_labels()
