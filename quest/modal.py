@@ -17,6 +17,7 @@ class Modal:
     height = 400
     line_height = 20
     background_color = arcade.color.LIGHT_GRAY
+    active = True
 
     def __init__(self, game):
         self.game = game
@@ -69,20 +70,20 @@ class Modal:
         """
         self.game.close_modal()
 
-    def on_key_release(self, key, modifiers):
-        pass
-
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.W:
-            self.current_option = (self.current_option - 1) % len(self.option_labels)
-            self.option_labels.set_highlight(self.current_option)
+            self.handle_change_option(-1)
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.current_option = (self.current_option + 1) % len(self.option_labels)
-            self.option_labels.set_highlight(self.current_option)
+            self.handle_change_option(1)
         elif key == arcade.key.ENTER:
             self.handle_choice()
+
+    def handle_change_option(self, change):
+        self.current_option = (self.current_option + change) % len(self.option_labels)
+        self.option_labels.set_highlight(self.current_option)
     
     def handle_choice(self):
+        print("IN HANDLE_CHOICE FOR {}".format(self.name))
         self.choose_option(self.current_option)
         self.set_text_labels()
         self.set_option_labels()
@@ -115,3 +116,27 @@ class DialogueModal(Modal):
         self.dialogue.choose(value)
         if not self.dialogue.running:
             self.game.close_modal()
+
+
+class AlertModal(Modal):
+    "A simple modal, just used to return a result."
+    def __init__(self, game, message, response="OK", close_after_showing=True):
+        self.message = message
+        self.response = response
+        self.close_after_showing = close_after_showing
+        super().__init__(game)
+
+    def text_label_contents(self):
+        return [self.message]
+
+    def option_label_contents(self):
+        return [self.response]
+
+    def handle_choice(self):
+        print("IN HANDLE_CHOICE FOR {}".format(self.name))
+        self.choose_option(self.current_option)
+        if self.close_after_showing:
+            self.game.close_modal()
+
+    def choose_option(self, value):
+        return True

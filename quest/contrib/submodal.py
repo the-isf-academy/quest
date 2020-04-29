@@ -29,12 +29,22 @@ class SubmodalMixin:
 
     submodal = None
 
+    def get_active_modal(self):
+        """Finds the modal who should control rendering and handling input.
+        """
+        if self.submodal and self.submodal.active:
+            try:
+                return self.submodal.get_active_modal()
+            except AttributeError:
+                return self.submodal
+        else:
+            return self
+
     def set_text_labels(self):
         """Creates text labels.
         """
-        text = (self.submodal or self).text_label_contents()
         self.text_labels = TextLabelStack(
-            text,
+            self.get_active_modal().text_label_contents(),
             self.x_center,
             self.y_center + self.height / 2
         )
@@ -42,23 +52,24 @@ class SubmodalMixin:
     def set_option_labels(self):
         """Creates option labels. 
         """
-        options = (self.submodal or self).option_label_contents()
+        m = self.get_active_modal()
+        options = m.option_label_contents()
         disposable_stack = TextLabelStack(options, 0, 0)
         self.option_labels = TextLabelStack(
             options,
             self.x_center,
             self.y_center - self.height / 2 + disposable_stack.height()
         )
-        self.current_option = 0
-        self.option_labels.set_highlight(self.current_option)
+        m.current_option = 0
+        self.option_labels.set_highlight(m.current_option)
+
+    def handle_change_option(self, change):
+        m = self.get_active_modal()
+        m.current_option = (m.current_option + change) % len(m.option_labels)
+        self.option_labels.set_highlight(m.current_option)
 
     def handle_choice(self):
         "Lets submodal choose option, if set"
-        if self.submodal:
-            result = self.submodal.choose_option(self.current_option)
-            if result:
-                self.submodal = None
-        else:
-            result = self.choose_option(self.current_option)
+        self.get_active_modal().choose_option(self.get_active_modal().current_option)
         self.set_text_labels()
         self.set_option_labels()
