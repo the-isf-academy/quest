@@ -68,7 +68,7 @@ class GrandmasSoupWithInventory(InventoryMixin, QuestGame):
         """
         item_count = len(self.inventory())
         if item_count == 1:
-            self.dialogue.run(self.inventory[0].description.upper())
+            self.dialogue.run(self.inventory()[0].description.upper())
         elif item_count == 2:
             self.dialogue.run("TWO")
         elif item_count == 3:

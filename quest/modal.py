@@ -83,7 +83,6 @@ class Modal:
         self.option_labels.set_highlight(self.current_option)
     
     def handle_choice(self):
-        print("IN HANDLE_CHOICE FOR {}".format(self.name))
         self.choose_option(self.current_option)
         self.set_text_labels()
         self.set_option_labels()
@@ -113,17 +112,16 @@ class DialogueModal(Modal):
         return self.dialogue.get_options()
 
     def choose_option(self, value):
+        print("Choosing {}".format(value))
         self.dialogue.choose(value)
         if not self.dialogue.running:
             self.game.close_modal()
 
-
 class AlertModal(Modal):
     "A simple modal, just used to return a result."
-    def __init__(self, game, message, response="OK", close_after_showing=True):
+    def __init__(self, game, message, response="OK"):
         self.message = message
         self.response = response
-        self.close_after_showing = close_after_showing
         super().__init__(game)
 
     def text_label_contents(self):
@@ -133,10 +131,8 @@ class AlertModal(Modal):
         return [self.response]
 
     def handle_choice(self):
-        print("IN HANDLE_CHOICE FOR {}".format(self.name))
         self.choose_option(self.current_option)
-        if self.close_after_showing:
-            self.game.close_modal()
+        self.game.close_modal()
 
     def choose_option(self, value):
-        return True
+        self.active = False

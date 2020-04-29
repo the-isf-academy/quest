@@ -83,54 +83,12 @@ class InventoryItemMixin:
         """What should happen when used. By default, kills the item.
         """
         self.kill()
-            
-class InventoryItemModal(Modal):
-    """A modal for interacting with an inventory item. 
-    """
-    name = "inventory item modal"
-    use_option = "use"
-    drop_option = "drop"
-    close_modal_option = "back"
-
-    def __init__(self, game, item, count):
-        self.item = item
-        self.count = count
-        super().__init__(game)
-
-    def text_label_contents(self):
-        return [
-            "{} ({})".format(self.item.description, self.count),
-            self.item.detailed_description
-        ]
-
-    def option_label_contents(self):
-        verbs = []
-        if self.item.usable:
-            verbs.append(self.use_option)
-        if self.item.droppable:
-            verbs.append(self.drop_option)
-        verbs.append(self.close_modal_option)
-        return verbs
-
-    def choose_option(self, value):
-        print("IN CHOOSE OPTION FOR INVENTORY ITEM MODAL")
-        print("  options: {}".format(', '.join(self.option_label_contents())))
-        print("  value: {}".format(value))
-        verb = self.option_label_contents()[value]
-        print("  verb: {}".format(verb))
-        if verb == self.drop_option:
-            self.game.drop(self.item) 
-        elif verb == self.use_option:
-            self.item.use(self.game)
-        self.active = False
 
 class InventoryModal(SubmodalMixin, Modal):
     """An extension of Modal which interaacts with inventories.
     """
-    name = "inventory modal"
     welcome_message = "Your inventory:"
     close_modal_option = "OK"
-    detail_modal_class = InventoryItemModal
 
     def __init__(self, game, inventory):
         self.inventory = inventory
@@ -170,3 +128,39 @@ class InventoryModal(SubmodalMixin, Modal):
 
     def count_items_with_description(self, description):
         return len([item for item in self.inventory if item.description == description])
+            
+class InventoryItemModal(Modal):
+    """A modal for interacting with an inventory item. 
+    """
+    name = "inventory item modal"
+    use_option = "use"
+    drop_option = "drop"
+    close_modal_option = "back"
+
+    def __init__(self, game, item, count):
+        self.item = item
+        self.count = count
+        super().__init__(game)
+
+    def text_label_contents(self):
+        return [
+            "{} ({})".format(self.item.description, self.count),
+            self.item.detailed_description
+        ]
+
+    def option_label_contents(self):
+        verbs = []
+        if self.item.usable:
+            verbs.append(self.use_option)
+        if self.item.droppable:
+            verbs.append(self.drop_option)
+        verbs.append(self.close_modal_option)
+        return verbs
+
+    def choose_option(self, value):
+        verb = self.option_label_contents()[value]
+        if verb == self.drop_option:
+            self.game.drop(self.item) 
+        elif verb == self.use_option:
+            self.item.use(self.game)
+        self.active = False

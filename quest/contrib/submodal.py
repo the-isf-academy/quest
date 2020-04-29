@@ -66,7 +66,7 @@ class SubmodalMixin:
     def handle_change_option(self, change):
         m = self.get_active_modal()
         m.current_option = (m.current_option + change) % len(m.option_labels)
-        self.option_labels.set_highlight(m.current_option)
+        m.option_labels.set_highlight(m.current_option)
 
     def handle_choice(self):
         "Lets submodal choose option, if set"
