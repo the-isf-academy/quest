@@ -140,29 +140,33 @@ class InventoryModal(SubmodalMixin, Modal):
         return [self.welcome_message]
 
     def option_label_contents(self):
-        return self.item_descriptions() + [self.close_modal_option]
+        labels = []
+        for description in self.unique_item_descriptions():
+            count = self.count_items_with_description(description)
+            labels.append("{} ({})".format(description, count))
+        labels.append(self.close_modal_option)
+        return labels
 
     def choose_option(self, value):
-        if value == len(self.item_counts()):
+        choice = self.option_label_contents()[value]
+        if choice == self.close_modal_option:
             self.game.close_modal()
         else:
-            description, count = list(self.item_counts().items())[value]
+            description = self.unique_item_descriptions()[value]
             item = self.get_item_with_description(description)
-            self.submodal = self.detail_modal_class(self.game, item, count)
+            self.submodal = self.get_detail_modal(item)
+
+    def get_detail_modal(self, item):
+        count = self.count_items_with_description(item.description)
+        return InventoryItemModal(self.game, item, count)
 
     def get_item_with_description(self, description):
-        """Returns the first item with the description
-        """
         for item in self.inventory:
             if item.description == description:
                 return item
 
-    def item_counts(self):
-        """Returns a dictionary of {item_description: count}
-        """
-        return Counter([item.description for item in self.inventory])
+    def unique_item_descriptions(self):
+        return sorted(set([item.description for item in self.inventory]))
 
-    def item_descriptions(self):
-        """Returns a list of item descriptions, each including the item's count.
-        """
-        return ["{} ({})".format(desc, count) for desc, count in sorted(self.item_counts().items())]
+    def count_items_with_description(self, description):
+        return len([item for item in self.inventory if item.description == description])
