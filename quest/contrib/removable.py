@@ -1,4 +1,5 @@
 from arcade import SpriteList
+from collections import defaultdict
 
 class RemovableMixin:
     """A mixin for QuestGame which adds support for removing sprites from the game.
@@ -23,13 +24,10 @@ class RemovableMixin:
             but you might want others like "inventory" or "shop" or 
             "dead_spirits_seeking_revenge." 
     """
-    removed_sprite_list_names = ["default"]
 
     def __init__(self):
         super().__init__()
-        self.removed_sprite_lists = {}
-        for name in self.removed_sprite_list_names:
-            self.removed_sprite_lists[name] = SpriteList()
+        self.removed_sprite_lists = defaultdict(SpriteList)
 
     def add_sprite_to_game(self, sprite):
         """Adds the sprite to the game and removes it from storage.

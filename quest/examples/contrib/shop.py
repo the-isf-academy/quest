@@ -1,31 +1,40 @@
 from quest.game import QuestGame
 from quest.map import TiledMap
 from quest.dialogue import Dialogue
-from quest.modal import Modal, DialogueModal
+from quest.modal import Modal, AlertModal, DialogueModal
 from quest.sprite import QuestSprite, Player, Wall, NPC
 from quest.helpers import scale, resolve_resource_path
 from quest.strategy import RandomWalk
 from quest.contrib.inventory import InventoryMixin, InventoryItemMixin
+from quest.contrib.shop import ShopMixin
+from quest.contrib.coin import CoinMixin
+from quest.examples.grandmas_soup import Grandma
 import arcade
 import os
 from pathlib import Path
 
-class GrandmasSoupWithInventory(InventoryMixin, QuestGame):
+class GrandmasSoupWithShop(InventoryMixin, ShopMixin, CoinMixin, QuestGame):
     """Help Grandma find all the ingredients for her soup.
 
-    This version has an inventory, which you can access by pressing 'i'.
+    This game demonstrates how to use a shop attribute as part of a game.
     """
 
     player_sprite_image = resolve_resource_path("images/boy_simple.png")
     player_initial_x = 300
     player_initial_y = 300
     player_speed = 8
+    total_coins = 12
+    map_dimensions = (1000, 1000)
+    money = 0
 
     def __init__(self):
         super().__init__()
+        self.welcome = AlertModal(self, "Press i for inventory and z to enter the shop.")
         self.dialogue = Dialogue.from_ink(resolve_resource_path("grandma.ink"))
         self.modal = DialogueModal(self, self.dialogue)
-        self.items = []
+        self.shop_inventory().append(Tomatos(resolve_resource_path("images/items/tomatos.png"), 1))
+        self.shop_inventory().append(Potatoes(resolve_resource_path("images/items/potatoes.png"), 1))
+        #self.open_modal(self.welcome)
 
     def setup_maps(self):
         """Sets up the standard island map.
@@ -45,21 +54,19 @@ class GrandmasSoupWithInventory(InventoryMixin, QuestGame):
     def setup_npcs(self):
         """Creates and places Grandma and the vegetables.
         """
+        super().setup_npcs()
         npc_data = [
-            [Grandma, "images/people/grandma.png", 3, 400, 400],
             [Carrots, "images/items/carrots.png", 1, 220, 640],
             [Mushroom, "images/items/mushroom.png", 1, 1028, 264],
-            [Potatoes, "images/items/potatoes.png", 1, 959, 991],
-            [Tomatos, "images/items/tomatos.png", 1, 323, 1055],
+            [Grandma, "images/people/grandma.png", 3, 400, 400],
         ]
-        self.npc_list = arcade.SpriteList()
         for sprite_class, image, scale, x, y in npc_data:
             sprite = sprite_class(resolve_resource_path(image), scale)
             sprite.center_x = x
             sprite.center_y = y
             self.npc_list.append(sprite)
 
-        grandma = self.npc_list[0]
+        grandma = self.npc_list[-1]
         grandma.strategy = RandomWalk(0.05) 
 
     def talk_with_grandma(self):
@@ -77,37 +84,17 @@ class GrandmasSoupWithInventory(InventoryMixin, QuestGame):
             self.dialogue.run("SOUP")
         self.open_modal(self.modal)
 
-class Grandma(NPC):
-    """Grandma is an NPC. 
+    def got_coin(self):
+        self.money += 1
 
-    Attributes:
-        repel_distance: How far back the player should be pushed after colliding
-            with Grandma. This is necessary because otherwise when the dialogue modal 
-            closed, it would immediately reopen. Grandma is interesting, but not that 
-            interesting.
-    """
-    repel_distance = 20
-
-    def on_collision(self, sprite, game):
-        """When the player collides with Grandma, she repels the player and then 
-        :py:meth:`talk_with_grandma` is called to open the dialogue modal.
-        """
-        self.repel(sprite)
-        if isinstance(sprite, Player):
-            game.talk_with_grandma()
-
-    def repel(self, sprite):
-        "Backs the sprite away from self"
-        away = (self.center_x - sprite.center_x, self.center_y - sprite.center_y)
-        away_x, away_y = scale(away, self.repel_distance)
-        sprite.center_x = sprite.center_x - away_x
-        sprite.center_y = sprite.center_y - away_y
-        sprite.stop()
+    def message(self):
+        return "${}".format(self.money)
 
 class Vegetable(InventoryItemMixin, NPC):
     """A vegetable is an NPC that can be picked up.
     """
     description = "item"
+    price = 4
 
 class Carrots(Vegetable):
     description = "carrots"
@@ -126,6 +113,5 @@ class Tomatos(Vegetable):
     detailed_description = "Three shiny red tomatos."
 
 if __name__ == '__main__':
-    game = GrandmasSoupWithInventory()
+    game = GrandmasSoupWithShop()
     game.run()
-

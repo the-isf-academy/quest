@@ -8,7 +8,11 @@ from quest.text_label import TextLabelStack
 
 class Modal:
     """ A modal window is a pop-up that pauses the game until it is resolved.
-    It is called a Modal because it puts the game into a new mode. 
+    It is called a Modal because it puts the game into a new mode. To write modal subclasses,
+    override `text_label_contents()` to change what is displayed, `option_label_contents()` to 
+    change the options presented, and `choose_option(value)` to change what should happen
+    when a value is chosen. When a modal is ready to be closed, it should call `self.close()` from
+    `choose_option`. 
 
     Arguments: 
         game: The game which the Modal is part of.
@@ -67,20 +71,19 @@ class Modal:
     def choose_option(self, value):
         """When a button is clicked, it calls choose_option with its value.
         """
-        self.game.close_modal()
-
-    def on_key_release(self, key, modifiers):
-        pass
+        self.close()
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.W:
-            self.current_option = (self.current_option - 1) % len(self.option_labels)
-            self.option_labels.set_highlight(self.current_option)
+            self.handle_change_option(-1)
         elif key == arcade.key.DOWN or key == arcade.key.S:
-            self.current_option = (self.current_option + 1) % len(self.option_labels)
-            self.option_labels.set_highlight(self.current_option)
+            self.handle_change_option(1)
         elif key == arcade.key.ENTER:
             self.handle_choice()
+
+    def handle_change_option(self, change):
+        self.current_option = (self.current_option + change) % len(self.option_labels)
+        self.option_labels.set_highlight(self.current_option)
     
     def handle_choice(self):
         self.choose_option(self.current_option)
@@ -98,6 +101,10 @@ class Modal:
         self.text_labels.draw()
         self.option_labels.draw()
 
+    def close(self):
+        self.game.close_modal()
+        
+
 class DialogueModal(Modal):
     """A modal window powered by a Dialogue object.
     """
@@ -112,6 +119,26 @@ class DialogueModal(Modal):
         return self.dialogue.get_options()
 
     def choose_option(self, value):
+        print("Choosing {}".format(value))
         self.dialogue.choose(value)
         if not self.dialogue.running:
-            self.game.close_modal()
+            self.close()
+
+class AlertModal(Modal):
+    "A simple modal, just used to return a result."
+    def __init__(self, game, message, response="OK"):
+        self.message = message
+        self.response = response
+        super().__init__(game)
+
+    def text_label_contents(self):
+        return [self.message]
+
+    def option_label_contents(self):
+        return [self.response]
+
+    def handle_choice(self):
+        self.choose_option(self.current_option)
+
+    def choose_option(self, value):
+        self.close()
