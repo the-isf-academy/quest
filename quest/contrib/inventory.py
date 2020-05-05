@@ -5,10 +5,10 @@ from collections import Counter
 import arcade
 
 class InventoryMixin(RemovableMixin):
-    """A mixin for QuestGame which provides an inventory. 
+    """A mixin for QuestGame which provides an inventory.
 
-    Pick up and drop  behavior can be implemented in a very simple way 
-    because `RemovableMixin` provides most of what we need. Also creates an 
+    Pick up and drop  behavior can be implemented in a very simple way
+    because `RemovableMixin` provides most of what we need. Also creates an
     `InventoryModal` and binds a key to open it (by default, 'i').
 
     Attributes:
@@ -42,7 +42,7 @@ class InventoryMixin(RemovableMixin):
 
     def on_key_press(self, key, modifier):
         """Overrides `on_key_press` so that when the inventory shortcut key is
-        pressed, opens the inventory. Otherwise, delegates to the parent 
+        pressed, opens the inventory. Otherwise, delegates to the parent
         `on_key_press` method.
         """
         if key == self.inventory_shortcut:
@@ -55,8 +55,8 @@ class InventoryItemMixin:
 
     Attributes:
         detailed_description (str): A more detailed description.
-        dropped_by (QuestSprite): Keeps track of whether the sprite was recently dropped. 
-        usable (bool): Indicates whether the item can be used. 
+        dropped_by (QuestSprite): Keeps track of whether the sprite was recently dropped.
+        usable (bool): Indicates whether the item can be used.
     """
 
     detailed_description = "An inventory item"
@@ -65,7 +65,7 @@ class InventoryItemMixin:
     droppable = True
 
     def on_update(self, game):
-        """When this sprite has recently been dropped, checks to see whether the 
+        """When this sprite has recently been dropped, checks to see whether the
         dropped (probably the player) is still colliding. If not, sets `self.dropped_by`
         to None, indicating that the sprite can be picked up again.
         """
@@ -128,9 +128,9 @@ class InventoryModal(SubmodalMixin, Modal):
 
     def count_items_with_description(self, description):
         return len([item for item in self.inventory if item.description == description])
-            
-class InventoryItemModal(Modal):
-    """A modal for interacting with an inventory item. 
+
+class InventoryItemModal(SubmodalMixin, Modal):
+    """A modal for interacting with an inventory item.
     """
     name = "inventory item modal"
     use_option = "use"
@@ -160,7 +160,7 @@ class InventoryItemModal(Modal):
     def choose_option(self, value):
         verb = self.option_label_contents()[value]
         if verb == self.drop_option:
-            self.game.drop(self.item) 
+            self.game.drop(self.item)
         elif verb == self.use_option:
             self.item.use(self.game)
         self.close()
