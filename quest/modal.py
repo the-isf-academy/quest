@@ -119,7 +119,6 @@ class DialogueModal(Modal):
         return self.dialogue.get_options()
 
     def choose_option(self, value):
-        print("Choosing {}".format(value))
         self.dialogue.choose(value)
         if not self.dialogue.running:
             self.close()

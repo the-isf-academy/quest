@@ -3,7 +3,7 @@ from pathlib import Path
 
 setuptools.setup(
     name="questgame",
-    version="0.1.9",
+    version="0.1.10",
     author="Chris Proctor",
     author_email="chris@chrisproctor.net",
     description="A simple game framework",
@@ -12,6 +12,8 @@ setuptools.setup(
     url="https://github.com/cproctor/quest",
     packages=setuptools.find_packages(),
     package_data={
+        'quest.examples': ['*.ink'],
+        'quest.examples.contrib': ['*.ink'],
         'quest.examples.images': ['*.png', '*.tmx', '*.tsx'],
         'quest.examples.images.people': ['*.png', '*.tmx', '*.tsx'],
         'quest.examples.images.island': ['*.png', '*.tmx', '*.tsx'],

@@ -92,7 +92,6 @@ class ShopItemModal(SubmodalMixin, Modal):
         return [self.buy_option, self.close_modal_option]
 
     def choose_option(self, value):
-        print("SHOP ITEM MODAL CHOOISING OPTION {}".format(value))
         verb = self.option_label_contents()[value]
         if verb == "buy":
             if self.item.price <= self.game.money:
@@ -102,7 +101,6 @@ class ShopItemModal(SubmodalMixin, Modal):
                 modal = ShopResultModal(self.game, self.fail_message)
             self.open_submodal(modal)
         else:
-            print("CLOSING SHOP ITEM MODAL")
             self.close()
 
     def money_message(self):

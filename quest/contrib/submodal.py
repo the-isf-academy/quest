@@ -107,14 +107,12 @@ class SubmodalMixin:
         """Handles a change option, using the active submodal if there is one.
         """
         m = self.get_active_modal()
-        print("CHANGING OPTION WITH {} IN CONTROL".format(m.__class__.__name__))
         m.current_option = (m.current_option + change) % len(m.option_labels)
         self.option_labels.set_highlight(m.current_option)
 
     def handle_choice(self):
         "Lets submodal choose option, if set"
         m = self.get_active_modal()
-        print("HANDLING CHOICE WITH {} IN CONTROL".format(m.__class__.__name__))
         m.choose_option(m.current_option)
         self.set_text_labels()
         self.set_option_labels()
