@@ -1,6 +1,7 @@
-Shop
+Coin
 =======
 
 Contributed by Jacob Wolf
+
 .. automodule:: quest.contrib.shop
    :members:
