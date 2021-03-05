@@ -26,7 +26,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        "arcade==2.3.8",
+        "arcade==2.5.5",
         "easing-functions>=1.0.3",
         "numpy>=1.17.4",
         "Pillow>=6.2.1",

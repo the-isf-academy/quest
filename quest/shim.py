@@ -27,7 +27,7 @@ def process_layer(sprite_class, map_object, layer_name, scaling=1, base_director
 
 def _process_tile_layer(sprite_class, map_object, layer, scaling=1, base_directory=""):
     sprite_list = SpriteList()
-    map_array = layer.data
+    map_array = layer.layer_data
     for row_index, row in enumerate(map_array):
         for column_index, item in enumerate(row):
             if item == 0:

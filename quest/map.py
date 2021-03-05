@@ -16,8 +16,9 @@ class Map:
     """Implements a map for a level or stage in the game.
 
     Each QuestGame may have multiple Maps. Each Map represents a game map with 
-    multiple layers, allowing the map to describe walls, loot, and multiple layers
-    of background imagery.
+    multiple layers. You can (optionally) specify a sprite class for each layer.
+    For example, one layer might contain walls, another loot, and another
+    background imagery. 
 
     Attributes:
         background_color: a 3-tuple of integers for red, green, blue. Each from 0-255.
