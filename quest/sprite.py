@@ -1,5 +1,4 @@
 from arcade.sprite import Sprite
-from arcade import calculate_points
 from quest.helpers import scale
 import arcade
 import os
