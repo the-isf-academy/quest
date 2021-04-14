@@ -106,3 +106,4 @@ class DividedStrategy(Strategy):
         else:
             if random() < self.ba_prob:
                 self.current_strategy = self.strategy_a
+

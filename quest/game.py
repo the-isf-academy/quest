@@ -49,7 +49,7 @@ class QuestGame(arcade.Window):
     screen_title = "Quest"
     player_scaling = 1
     player_sprite_image = None
-    player_speed = 10
+    # player_speed = 10
     player_initial_x = 0
     player_initial_y = 0
     view_bottom = 0
@@ -69,6 +69,7 @@ class QuestGame(arcade.Window):
         self.setup_physics_engine()
         self.center_view_on_player()
         self.current_modal = None
+        # self.player_speed = None
 
     def run(self):
         """Starts the game.
@@ -76,6 +77,9 @@ class QuestGame(arcade.Window):
         self.start_time = time()
         self.running = True
         arcade.run()
+
+    def quit(self):
+        arcade.close_window()
 
     def setup_maps(self):
         """Sets up the game maps.
@@ -199,10 +203,23 @@ class QuestGame(arcade.Window):
         self.player_list.draw()
         message = self.message()
         if message:
-            arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
-                    arcade.csscolor.WHITE, 18)
+            # arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
+            #         arcade.csscolor.WHITE, 18)
+            
+            arcade.draw_text(message, self.screen_width*.25, self.screen_height*.5,
+                    arcade.csscolor.BLACK, 64)
+
+            arcade.draw_text(text= "Press `ESC` to quit.", 
+                            start_x= self.screen_width*.45, 
+                            start_y= self.screen_height*.2,
+                            color= arcade.csscolor.BLACK, 
+                            font_size = 12,
+                            italic= True)
+
+            arcade.finish_render()
         if self.current_modal:
             self.current_modal.on_draw()
+
 
     def open_modal(self, modal):
         """Shows a modal window and pauses the game until the modal resolves.
@@ -245,6 +262,11 @@ class QuestGame(arcade.Window):
                 self.player.change_x = -self.player.speed
             elif key == arcade.key.RIGHT or key == arcade.key.D:
                 self.player.change_x = self.player.speed
+            if key == arcade.key.ESCAPE:
+                self.quit()
+            elif key==arcade.key.RETURN:
+                print('hi')
+                self.run()
 
     def on_key_release(self, key, modifiers):
         """Handles key releases.

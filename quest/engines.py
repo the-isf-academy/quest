@@ -72,6 +72,7 @@ class ContinuousPhysicsEngine(QuestPhysicsEngine):
     def resolve_collisions_with_walls(self):
         """Resolves collisions between every sprite and every wall.
         """
+
         for moving_sprite in self.non_wall_list:
             if moving_sprite.change_x == 0 and moving_sprite.change_y == 0:
                 continue

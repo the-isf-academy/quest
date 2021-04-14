@@ -90,3 +90,4 @@ class Background(QuestSprite):
     """A sprite that does nothing.
     """
     description = "background"
+
