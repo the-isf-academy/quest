@@ -115,8 +115,9 @@ class Grandma(NPC):
         """When the player collides with Grandma, she repels the player and then 
         :py:meth:`talk_with_grandma` is called to open the dialogue modal.
         """
-        self.repel(sprite)
-        if isinstance(sprite, Player):
+        if isinstance(sprite, Player):        
+            self.repel(sprite)
+
             game.talk_with_grandma()
 
     def repel(self, sprite):
