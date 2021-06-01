@@ -54,6 +54,7 @@ class QuestGame(arcade.Window):
     player_initial_y = 0
     view_bottom = 0
     view_left = 0
+    game_over = False
 
     def __init__(self):
         """Initializes the game window and sets up other classes.

@@ -91,3 +91,31 @@ class Background(QuestSprite):
     """
     description = "background"
 
+
+
+# class EndMixIn:
+#     def on_collision(self, sprite, game):
+#         """When the player collides with a Loot, it calls :py:meth:`quest.maze.MazeMap.on_loot_collected` to tell
+#         the game to make needed updates. Then the Loot kills itself.
+#         """
+#         print('hi')
+#         super().on_collision()
+#         print('hi')
+#         print(sprite)
+
+#         if game.game_over == False:
+#             print("end")
+#             game.game_over = True
+
+class End(NPC):
+    description = "end"
+
+
+    def on_collision(self, sprite, game):
+        """When the player collides with a Loot, it calls :py:meth:`quest.maze.MazeMap.on_loot_collected` to tell
+        the game to make needed updates. Then the Loot kills itself.
+        """
+ 
+        if game.game_over == False:
+            game.game_over = True
+            game.running = False
