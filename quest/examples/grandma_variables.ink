@@ -30,8 +30,8 @@ Oh, these are lovely carrots. But I still need {num_veggies_left} more vegetable
 
 + OK -> END
 
-=== TOMATOS ===
-Oh, these are such ripe tomatos. But I still {num_veggies_left} need more vegetables.
+=== TOMATOES ===
+Oh, these are such ripe tomatoes. But I still {num_veggies_left} need more vegetables.
 
 + OK -> END
 

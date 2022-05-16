@@ -206,14 +206,14 @@ class QuestGame(arcade.Window):
         if message:
             # arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
             #         arcade.csscolor.WHITE, 18)
-            
+
             arcade.draw_text(message, self.screen_width*.25, self.screen_height*.5,
                     arcade.csscolor.BLACK, 64)
 
-            arcade.draw_text(text= "Press `ESC` to quit.", 
-                            start_x= self.screen_width*.45, 
+            arcade.draw_text(text= "Press `ESC` to quit.",
+                            start_x= self.screen_width*.45,
                             start_y= self.screen_height*.2,
-                            color= arcade.csscolor.BLACK, 
+                            color= arcade.csscolor.BLACK,
                             font_size = 12,
                             italic= True)
 
@@ -266,7 +266,6 @@ class QuestGame(arcade.Window):
             if key == arcade.key.ESCAPE:
                 self.quit()
             elif key==arcade.key.RETURN:
-                print('hi')
                 self.run()
 
     def on_key_release(self, key, modifiers):

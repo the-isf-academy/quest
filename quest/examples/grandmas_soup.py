@@ -23,7 +23,7 @@ class GrandmasSoupGame(QuestGame):
     blue bar just above.
 
     Attributes:
-        dialogue: A :py:class:`Dialogue` containing the game's conversation. 
+        dialogue: A :py:class:`Dialogue` containing the game's conversation.
         modal: A :py:class:`DialogueModal` to show the dialogue.
         items: A list to keep track of which items the player has collected.
     """
@@ -31,7 +31,7 @@ class GrandmasSoupGame(QuestGame):
     player_sprite_image = resolve_resource_path("images/boy_simple.png")
     screen_width = 500
     screen_height = 500
-    left_viewport_margin = 96                            
+    left_viewport_margin = 96
     right_viewport_margin = 96
     bottom_viewport_margin = 96
     top_viewport_margin = 96
@@ -68,7 +68,7 @@ class GrandmasSoupGame(QuestGame):
             [Carrots, "images/items/carrots.png", 1, 220, 640],
             [Mushroom, "images/items/mushroom.png", 1, 1028, 264],
             [Potatoes, "images/items/potatoes.png", 1, 959, 991],
-            [Tomatos, "images/items/tomatos.png", 1, 323, 1055],
+            [Tomatoes, "images/items/tomatos.png", 1, 323, 1055],
         ]
         self.npc_list = arcade.SpriteList()
         for sprite_class, image, scale, x, y in npc_data:
@@ -88,7 +88,7 @@ class GrandmasSoupGame(QuestGame):
         self.open_modal(self.modal)
 
     def got_item(self, description):
-        """Adds the item's description to the items list. This is called when the 
+        """Adds the item's description to the items list. This is called when the
         player collides with a vegetable.
 
         Arguments:
@@ -101,21 +101,21 @@ class GrandmasSoupGame(QuestGame):
             self.dialogue.run("SOUP")
 
 class Grandma(NPC):
-    """Grandma is an NPC. 
+    """Grandma is an NPC.
 
     Attributes:
         repel_distance: How far back the player should be pushed after colliding
-            with Grandma. This is necessary because otherwise when the dialogue modal 
-            closed, it would immediately reopen. Grandma is interesting, but not that 
+            with Grandma. This is necessary because otherwise when the dialogue modal
+            closed, it would immediately reopen. Grandma is interesting, but not that
             interesting.
     """
     repel_distance = 20
 
     def on_collision(self, sprite, game):
-        """When the player collides with Grandma, she repels the player and then 
+        """When the player collides with Grandma, she repels the player and then
         :py:meth:`talk_with_grandma` is called to open the dialogue modal.
         """
-        if isinstance(sprite, Player):        
+        if isinstance(sprite, Player):
             self.repel(sprite)
 
             game.talk_with_grandma()
@@ -133,7 +133,7 @@ class Vegetable(NPC):
     """
     description = "item"
     def on_collision(self, sprite, game):
-        """When the player collides with a vegetable, it tells the game and then 
+        """When the player collides with a vegetable, it tells the game and then
         kills itself.
         """
         game.got_item(self.description)
@@ -148,8 +148,8 @@ class Mushroom(Vegetable):
 class Potatoes(Vegetable):
     description = "potatoes"
 
-class Tomatos(Vegetable):
-    description = "tomatos"
+class Tomatoes(Vegetable):
+    description = "tomatoes"
 
 if __name__ == '__main__':
     game = GrandmasSoupGame()
