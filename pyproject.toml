@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "questgame"
-version = "0.1.0"
+version = "0.2.0"
 description = "Quest provides a simpler interface to python's Arcade library."
 authors = ["Chris Proctor <github.com@accounts.chrisproctor.net>"]
 license = "MIT"
