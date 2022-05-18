@@ -15,6 +15,7 @@ easing-functions = "^1.0.4"
 tqdm = "^4.64.0"
 xvfbwrapper = "^0.2.9"
 Shapely = "^1.8.2"
+Sphinx = "^4.5.0"
 
 [tool.poetry.dev-dependencies]
 
