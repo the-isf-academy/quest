@@ -19,12 +19,8 @@ class Map:
     multiple layers. You can (optionally) specify a sprite class for each layer.
     For example, one layer might contain walls, another loot, and another
     background imagery. 
-
-    Attributes:
-        background_color: a 3-tuple of integers for red, green, blue. Each from 0-255.
-            The :py:mod:`arcade:color` module also predefines many colors.
-        tile_scaling: Factor by which to scale all map tiles. Default is 1.
     """
+
     background_color = (RED, GREEN, BLUE)
     tile_scaling = 1
 

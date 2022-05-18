@@ -122,11 +122,6 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         dynamic_sprite_lists (bool): Whether new sprites might be added
             to sprite lists during the game. Performance is better when
             False. Default True.
-
-    Attributes:
-        tile_transition_cutoff (float): Parametric t value at which a sprite's
-            current tile should shift to the
-
     """
 
     tile_transition_cutoff = 0.5
