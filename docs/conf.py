@@ -67,3 +67,5 @@ html_theme = 'sphinx_rtd_theme'
 # -- Additional configuration  -------------------------------------------------
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'none'
+master_doc = 'index'
+
