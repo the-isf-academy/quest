@@ -1,8 +1,8 @@
 import arcade
 from quest.errors import NoLayerError, MultipleLayersError
 from quest.sprite import QuestSprite
-from quest.shim import process_layer
 from math import floor
+from pathlib import Path
 
 RED = 0
 GREEN = 0
@@ -67,13 +67,13 @@ class Map:
             return layers[0]
 
 class TiledMap(Map):
-    """A subclass of Map which loads its layers from a TMX file. Each layer has a collection of tiles. 
-    When TiledMap is initialized, a sprite is created for each of these tiles. The sprite's image and
-    position are read from the tile layer data. The sprite's class (which can determine its behavior)
-    can be set using the `sprite_classes` argument. 
+    """A subclass of Map which loads its layers from a Tiled JSON file. Each layer has a collection of 
+    tiles. When TiledMap is initialized, a sprite is created for each of these tiles. The sprite's 
+    image and position are read from the tile layer data. The sprite's class (which can determine 
+    its behavior) can be set using the `sprite_classes` argument. 
     
     Use TiledMap when you want to design your map using
-    [Tiled](https://www.mapeditor.org/). This app saves maps as TMX files.
+    [Tiled](https://www.mapeditor.org/). Export your map in JSON format.
 
     Arguments:
         filename (str): Path to the .tmx tilemap file
@@ -81,10 +81,15 @@ class TiledMap(Map):
             that should be used for each layer. 
     """
     def __init__(self, filename, sprite_classes=None):
+        filepath = Path(filename)
+        if not filepath.exists():
+            raise ValueError(f"Error loading map: file {filepath} not found.")
+        if not filepath.suffix == ".json":
+            raise ValueError(f"Error loading map: Tilemaps must be in JSON format.")
         super().__init__()
-        tilemap = arcade.tilemap.read_tmx(filename)
-        for layer_name, sprite_class in sprite_classes.items():
-            sprite_list = process_layer(sprite_class, tilemap, layer_name, self.tile_scaling)
+        tilemap = arcade.load_tilemap(filepath)
+
+        for layer_name, sprite_class in tilemap.sprite_lists.items():
             layer = MapLayer(layer_name, sprite_list)
             self.add_layer(layer)
 
