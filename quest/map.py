@@ -77,20 +77,32 @@ class TiledMap(Map):
 
     Arguments:
         filename (str): Path to the .tmx tilemap file
-        sprite_classes: {layer_name: SpriteClass} dict specifying the sprite class
-            that should be used for each layer. 
+        sprite_classes: {layer_name: SpriteClass} dict whose keys should be the names of
+            layers in the tilemap and whose values should be sprite classes (subclasses of
+            :py:class:`QuestSprite`. For each layer, 
+            each sprite will be initialized using the given sprite class. 
     """
-    def __init__(self, filename, sprite_classes=None):
+    def __init__(self, filename, sprite_classes):
         filepath = Path(filename)
         if not filepath.exists():
-            raise ValueError(f"Error loading map: file {filepath} not found.")
+            raise ValueError(f"File {filepath} not found.")
         if not filepath.suffix == ".json":
-            raise ValueError(f"Error loading map: Tilemaps must be in JSON format.")
+            raise ValueError(f"Tilemaps must be in JSON format.")
         super().__init__()
         tilemap = arcade.load_tilemap(filepath)
-
-        for layer_name, sprite_class in tilemap.sprite_lists.items():
-            layer = MapLayer(layer_name, sprite_list)
+        for layer_name, layer_sprite_list in tilemap.sprite_lists.items():
+            if not layer_name in sprite_classes:
+                raise ValueError(f"Layer {layer_name} is not specified in sprite_classes {sprite_classes}.")
+            sprite_class = sprite_classes[layer_name]
+            quest_sprite_list = arcade.SpriteList()
+            for sprite in layer_sprite_list:
+                quest_sprite = sprite_class()
+                quest_sprite.center_x = sprite.center_x
+                quest_sprite.center_y = sprite.center_y
+                quest_sprite.texture = sprite.texture
+                
+                quest_sprite_list.append(quest_sprite)
+            layer = MapLayer(layer_name, quest_sprite_list)
             self.add_layer(layer)
 
 class MapLayer:
