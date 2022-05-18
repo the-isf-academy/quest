@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "questgame"
-version = "0.2.0"
+packages = [ {include = "quest"} ]
+version = "0.2.1"
 description = "Quest provides a simpler interface to python's Arcade library."
 authors = ["Chris Proctor <github.com@accounts.chrisproctor.net>"]
 license = "MIT"
@@ -13,6 +14,7 @@ numpy = "^1.22.3"
 easing-functions = "^1.0.4"
 tqdm = "^4.64.0"
 xvfbwrapper = "^0.2.9"
+Shapely = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 
