@@ -204,20 +204,8 @@ class QuestGame(arcade.Window):
         self.player_list.draw()
         message = self.message()
         if message:
-            # arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
-            #         arcade.csscolor.WHITE, 18)
-
-            arcade.draw_text(message, self.screen_width*.25, self.screen_height*.5,
-                    arcade.csscolor.BLACK, 64)
-
-            arcade.draw_text(text= "Press `ESC` to quit.",
-                            start_x= self.screen_width*.45,
-                            start_y= self.screen_height*.2,
-                            color= arcade.csscolor.BLACK,
-                            font_size = 12,
-                            italic= True)
-
-            arcade.finish_render()
+            arcade.draw_text(message, 10 + self.view_left, 10 + self.view_bottom,
+                    arcade.csscolor.WHITE, 18)
         if self.current_modal:
             self.current_modal.on_draw()
 
