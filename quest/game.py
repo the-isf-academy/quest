@@ -85,7 +85,7 @@ class QuestGame(arcade.Window):
     def setup_maps(self):
         """Sets up the game maps.
 
-        self.maps should be assigned to a list of :py:class:`Map` objects, which get
+        self.maps should be assigned to a list of :py:class:`Map <quest.map.Map>` objects, which get
         initialized here. Each map represents a 'level' or 'scene' of the game.
         Once the list of maps is created, use :py:meth:`set_current_map` to
         set one of the maps as the initial current map.
@@ -98,7 +98,7 @@ class QuestGame(arcade.Window):
         """Creates the player sprite.
 
         Initializes a sprite for the player, assigns its starting position,
-        and appends the player sprite to a SpriteList (Arcade likes to work
+        and appends the player sprite to an :py:class:`arcade:arcade.SpriteList` (Arcade likes to work
         with sprites in SpriteLists).
         """
         self.player = Player(self.player_sprite_image, self.player_scaling)
@@ -122,7 +122,7 @@ class QuestGame(arcade.Window):
         """Adds a map to the list of maps.
 
         Arguments:
-            game_map: A quest.map.Map object.
+            game_map: A :py:class:`Map <quest.map.Map>`.
         """
         self.maps.append(game_map)
         if len(self.maps) == 1:
@@ -131,7 +131,7 @@ class QuestGame(arcade.Window):
     def get_current_map(self):
         """Gets the current game map.
 
-        The current map is tracked using ``current_map_index``.
+        The current map is tracked using :py:attr:`current_map_index`.
 
         Returns:
             The current Map.
@@ -144,7 +144,7 @@ class QuestGame(arcade.Window):
         """Sets the current game map.
 
         Checks to make sure ``index`` is valid, and then stores it as
-        ``current_map_index``.
+        :py:attr:`current_map_index`
         """
         if index < 0 or index >= len(self.maps):
             raise ValueError("Cannot set current map to {}; there are {} maps.".format(
@@ -155,18 +155,18 @@ class QuestGame(arcade.Window):
         """Sets up the physics engine.
 
         Initializes the physics engine that will be used in the game.
-        A physics engine resolves interactions between sprites according to a
-        set of rules. The :doc:`arcade:index` :py:class:`arcade:PhysicsEngineSimple`
-        just keeps the player sprite from bumping into walls. More complicated
-        physics engines could implement collisions, gravity, or even realistic
-        3-dimensional interactions.
+        A physics engine maintains a tick model of time (see :ref:`tick_model`) 
+        and, at each moment, resolves interactions between sprites according to a
+        set of rules. By default, :py:class:`QuestGame` uses a 
+        :py:class:`ContinuousPhysicsEngine <quest.engines.ContinuousPhysicsEngine>`
+        allows sprites to occupy any (x, y) coordinates, while preventing the player
+        sprite from passing through walls. Walls are any
+        sprites on a map layer with the ``wall`` role. 
 
-        By default, :py:class:`QuestGame` uses :py:class:`arcade:PhysicsEngineSimple`
-        to prevent the player sprite from colliding or passing through any
-        sprites on a map layer with the ``wall`` role. If there are no
-        :py:class:`MapLayer` with the ``wall`` role, uses the
-        :py:class:`NullPhysicsEngine` instead. Don't override this method
-        unless you understand Arcade's physics engines pretty well.
+        If you prefer for sprites to occupy discrete coordinates on a grid instead
+        (this can be helpful for implementing NPC behavior), use a 
+        :py:class:`DiscretePhysicsEngine <quest.engines.DiscretePhysicsEngine>`
+        instead.
         """
         self.physics_engine = ContinuousPhysicsEngine(self)
 

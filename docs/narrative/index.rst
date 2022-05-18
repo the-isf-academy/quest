@@ -1,4 +1,4 @@
-Topics
+Guides
 ======
 
 .. toctree::
