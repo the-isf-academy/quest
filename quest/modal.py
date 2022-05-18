@@ -74,12 +74,21 @@ class Modal:
         self.close()
 
     def on_key_press(self, key, modifiers):
+        """This method is called every time a key is pressed while the modal is active.
+
+        Up/down keys (or w/s keys) change the currently-selected choice, while the enter
+        key selects the currently-selected choice.
+        """
         if key == arcade.key.UP or key == arcade.key.W:
             self.handle_change_option(-1)
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.handle_change_option(1)
         elif key == arcade.key.ENTER:
             self.handle_choice()
+
+    def on_key_release(self, key, modifiers):
+        "This method is called every time a key is released while the modal is active."
+        pass
 
     def handle_change_option(self, change):
         self.current_option = (self.current_option + change) % len(self.option_labels)
