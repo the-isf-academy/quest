@@ -33,7 +33,7 @@ class IslandAdventure(QuestGame):
     def setup_maps(self):
         """Sets up the map.
 
-        Uses a :py:class:`TiledMap` to load the map from a ``.tmx`` file,
+        Uses a :py:class:`TiledMap` to load the map from a ``.json`` file,
         created using :doc:`Tiled <tiled:manual/introduction>`. 
         """
         super().setup_maps()
@@ -41,7 +41,7 @@ class IslandAdventure(QuestGame):
             "Obstacles": Wall,
             "Background": Background,
         }
-        island_map = TiledMap(resolve_resource_path("images/island/island.tmx"), sprite_classes)
+        island_map = TiledMap(resolve_resource_path("images/island/island.json"), sprite_classes)
         self.add_map(island_map)
 
     def setup_walls(self):
