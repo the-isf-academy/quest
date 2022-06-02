@@ -1,7 +1,7 @@
 Installation
 ============
 
-Quest is distributed on PyPI, so that you can install it with pip
+Quest is distributed an `questgame` on PyPI, so that you can install it with pip
 ::
 
     $ pip install questgame

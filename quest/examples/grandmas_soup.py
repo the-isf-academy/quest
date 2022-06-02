@@ -53,7 +53,7 @@ class GrandmasSoupGame(QuestGame):
             "Obstacles": Wall,
             "Background": QuestSprite,
         }
-        self.add_map(TiledMap(resolve_resource_path("images/island/island.tmx"), sprite_classes))
+        self.add_map(TiledMap(resolve_resource_path("images/island/island.json"), sprite_classes))
 
     def setup_walls(self):
         """As in other examples, assigns all sprites in the "Obstacles" layer to be walls.

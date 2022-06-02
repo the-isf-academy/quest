@@ -7,3 +7,4 @@ upload.sh
 dist/
 questgame.egg-info/
 build/
+docs/_build/*

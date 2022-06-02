@@ -1,5 +1,5 @@
 import arcade
-from arcade.sprite_list import SpriteList, _check_for_collision
+from arcade.sprite_list import SpriteList, check_for_collision
 from arcade import check_for_collision_with_list
 from itertools import chain, combinations
 from collections import defaultdict
@@ -93,7 +93,7 @@ class ContinuousPhysicsEngine(QuestPhysicsEngine):
         sprite.stop()
         repel_distance = 1
         away = (wall.center_x - sprite.center_x, wall.center_y - sprite.center_y)
-        while _check_for_collision(sprite, wall):
+        while check_for_collision(sprite, wall):
             away_x, away_y = scale(away, repel_distance)
             sprite.center_x = sprite.center_x - away_x
             sprite.center_y = sprite.center_y - away_y
@@ -103,7 +103,7 @@ class ContinuousPhysicsEngine(QuestPhysicsEngine):
         """For every pair of nonwall sprites, resolves collisions.
         """
         for sprite0, sprite1 in combinations(self.non_wall_list, 2):
-            if _check_for_collision(sprite0, sprite1):
+            if check_for_collision(sprite0, sprite1):
                 sprite0.on_collision(sprite1, self.game)
                 sprite1.on_collision(sprite0, self.game)
 
@@ -122,11 +122,6 @@ class DiscretePhysicsEngine(QuestPhysicsEngine):
         dynamic_sprite_lists (bool): Whether new sprites might be added
             to sprite lists during the game. Performance is better when
             False. Default True.
-
-    Attributes:
-        tile_transition_cutoff (float): Parametric t value at which a sprite's
-            current tile should shift to the
-
     """
 
     tile_transition_cutoff = 0.5

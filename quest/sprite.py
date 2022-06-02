@@ -54,7 +54,7 @@ class QuestSprite(Sprite):
         Override this method to change the sprite's collision behavior.
         For example, an NPC sprite which represents an item that can be collected
         by the player would probably call a method on `game` to update the inventory
-        and then call :py:meth:`self.kill()`.
+        and then call :py:meth:`self.remove()`.
         """
         pass
 
@@ -96,7 +96,7 @@ class Background(QuestSprite):
 class EndMixIn:
     def on_collision(self, sprite, game):
         """When the player collides with a Loot, it calls :py:meth:`quest.maze.MazeMap.on_loot_collected` to tell
-        the game to make needed updates. Then the Loot kills itself.
+        the game to make needed updates. Then the Loot removes itself from the map.
         """
         super().on_collision(sprite,game)
    

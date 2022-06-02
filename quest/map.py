@@ -1,8 +1,8 @@
 import arcade
 from quest.errors import NoLayerError, MultipleLayersError
 from quest.sprite import QuestSprite
-from quest.shim import process_layer
 from math import floor
+from pathlib import Path
 
 RED = 0
 GREEN = 0
@@ -19,12 +19,8 @@ class Map:
     multiple layers. You can (optionally) specify a sprite class for each layer.
     For example, one layer might contain walls, another loot, and another
     background imagery. 
-
-    Attributes:
-        background_color: a 3-tuple of integers for red, green, blue. Each from 0-255.
-            The :py:mod:`arcade:color` module also predefines many colors.
-        tile_scaling: Factor by which to scale all map tiles. Default is 1.
     """
+
     background_color = (RED, GREEN, BLUE)
     tile_scaling = 1
 
@@ -67,25 +63,42 @@ class Map:
             return layers[0]
 
 class TiledMap(Map):
-    """A subclass of Map which loads its layers from a TMX file. Each layer has a collection of tiles. 
-    When TiledMap is initialized, a sprite is created for each of these tiles. The sprite's image and
-    position are read from the tile layer data. The sprite's class (which can determine its behavior)
-    can be set using the `sprite_classes` argument. 
+    """A subclass of Map which loads its layers from a Tiled JSON file. Each layer has a collection of 
+    tiles. When TiledMap is initialized, a sprite is created for each of these tiles. The sprite's 
+    image and position are read from the tile layer data. The sprite's class (which can determine 
+    its behavior) can be set using the `sprite_classes` argument. 
     
     Use TiledMap when you want to design your map using
-    [Tiled](https://www.mapeditor.org/). This app saves maps as TMX files.
+    [Tiled](https://www.mapeditor.org/). Export your map in JSON format.
 
     Arguments:
         filename (str): Path to the .tmx tilemap file
-        sprite_classes: {layer_name: SpriteClass} dict specifying the sprite class
-            that should be used for each layer. 
+        sprite_classes: {layer_name: SpriteClass} dict whose keys should be the names of
+            layers in the tilemap and whose values should be sprite classes (subclasses of
+            :py:class:`QuestSprite`. For each layer, 
+            each sprite will be initialized using the given sprite class. 
     """
-    def __init__(self, filename, sprite_classes=None):
+    def __init__(self, filename, sprite_classes):
+        filepath = Path(filename)
+        if not filepath.exists():
+            raise ValueError(f"File {filepath} not found.")
+        if not filepath.suffix == ".json":
+            raise ValueError(f"Tilemaps must be in JSON format.")
         super().__init__()
-        tilemap = arcade.tilemap.read_tmx(filename)
-        for layer_name, sprite_class in sprite_classes.items():
-            sprite_list = process_layer(sprite_class, tilemap, layer_name, self.tile_scaling)
-            layer = MapLayer(layer_name, sprite_list)
+        tilemap = arcade.load_tilemap(filepath)
+        for layer_name, layer_sprite_list in tilemap.sprite_lists.items():
+            if not layer_name in sprite_classes:
+                raise ValueError(f"Layer {layer_name} is not specified in sprite_classes {sprite_classes}.")
+            sprite_class = sprite_classes[layer_name]
+            quest_sprite_list = arcade.SpriteList()
+            for sprite in layer_sprite_list:
+                quest_sprite = sprite_class()
+                quest_sprite.center_x = sprite.center_x
+                quest_sprite.center_y = sprite.center_y
+                quest_sprite.texture = sprite.texture
+                
+                quest_sprite_list.append(quest_sprite)
+            layer = MapLayer(layer_name, quest_sprite_list)
             self.add_layer(layer)
 
 class MapLayer:

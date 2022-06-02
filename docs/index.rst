@@ -24,6 +24,7 @@ raise an issue at `Quest's home on GitHub <https://github.com/cproctor/quest>`_ 
    :caption: Contents:
 
    tutorial/index
+   narrative/index
    examples/index
    api/index
    pedagogy/index

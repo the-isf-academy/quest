@@ -4,19 +4,11 @@ Quest provides a simpler interface to python's Arcade library.
 
 ## Installation
 
-Quest runs on Python3. Quest will be distributed on PyPI, so that you can install it with pip. But for now, you have to install it manually. 
-As usual, a virtual env is recommended but not required.
-
-    $ python3 -m venv env
-    $ source env/bin/activate
-    $ git clone https://github.com/cproctor/quest.git
-    $ cd quest
-    $ pip install -r requirements.txt
-    $ pip install -e .
-    $ cd quest/examples
-    $ python maze_demo.py
+Quest runs on Python3. Quest is distributed on PyPI, so that you can install it with pip or poetry.
+    $ pip install questgame
     
-The point is to subclass the classes provided in the framework to make your own game. There will be documentation explaining how all the code works, but it doesn't exist yet. So you'll just have to read the source!
+The point is to subclass the classes provided in the framework to make your own game. 
+There is explaining how all the code works. 
 
 ## Creating sprites and maps
 - [Tiled](https://www.mapeditor.org/)

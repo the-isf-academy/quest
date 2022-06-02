@@ -1,5 +1,7 @@
-The tick model of time
-======================
+.. _tick_model: 
+
+Tick model of time
+==================
 
 Time is modeled as a series of moments. Role of update and draw. (state)
 Common pattern.
