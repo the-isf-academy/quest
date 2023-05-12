@@ -9,7 +9,7 @@ repository = "https://github.com/cproctor/quest"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-arcade = "2.6.9"
+arcade = "^2.6.9"
 numpy = "^1.22.3"
 easing-functions = "^1.0.4"
 tqdm = "^4.64.0"
